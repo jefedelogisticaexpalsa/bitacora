@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bitácora de Seguridad – FJ Logística Ecuatoriana</title>
+<style>
+  :root {
+    --rojo:#D62B2B; --rojo-dark:#A81F1F; --rojo-light:#f8e8e8;
+    --gris:#2c2c2c; --gris-medio:#555; --gris-claro:#f4f4f4;
+    --blanco:#ffffff; --borde:#ddd; --sombra:0 2px 12px rgba(0,0,0,0.10);
+    --verde:#1a7a3c; --azul:#1a4a8a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:#efefef;color:var(--gris);min-height:100vh;}
+
+  /* LOGIN */
+  #loginScreen{
+    display:flex;align-items:center;justify-content:center;
+    min-height:100vh;background:linear-gradient(135deg,#A81F1F 0%,#D62B2B 60%,#2c2c2c 100%);
+  }
+  .login-card{
+    background:#fff;border-radius:18px;box-shadow:0 8px 40px rgba(0,0,0,0.25);
+    padding:40px 36px 32px;width:100%;max-width:380px;
+  }
+  .login-logo{display:flex;align-items:center;gap:12px;justify-content:center;margin-bottom:24px;}
+  .login-logo .logo-box{background:var(--rojo);border-radius:10px;padding:8px 14px;display:flex;align-items:center;gap:8px;}
+  .login-logo .logo-fj{font-size:28px;font-weight:900;color:#fff;letter-spacing:-1px;}
+  .login-logo .logo-text{font-size:10px;color:#fff;font-weight:600;line-height:1.2;}
+  .login-title{text-align:center;font-size:17px;font-weight:700;color:var(--gris);margin-bottom:6px;}
+  .login-sub{text-align:center;font-size:12px;color:var(--gris-medio);margin-bottom:24px;}
+  .login-field{margin-bottom:16px;}
+  .login-field label{display:block;font-size:12px;font-weight:600;color:var(--gris-medio);margin-bottom:5px;}
+  .login-field input{
+    width:100%;padding:10px 13px;border:1.5px solid var(--borde);border-radius:8px;
+    font-size:14px;background:var(--gris-claro);transition:border 0.2s;
+  }
+  .login-field input:focus{outline:none;border-color:var(--rojo);background:#fff;}
+  .btn-login{
+    width:100%;padding:12px;background:var(--rojo);color:#fff;
+    border:none;border-radius:9px;font-size:15px;font-weight:700;
+    cursor:pointer;margin-top:6px;transition:background 0.2s;
+  }
+  .btn-login:hover{background:var(--rojo-dark);}
+  .login-error{
+    background:#fde8e8;border:1.5px solid #f5c6c6;border-radius:8px;
+    color:#a00;font-size:13px;padding:9px 13px;margin-bottom:14px;display:none;
+  }
+
+  /* HEADER */
+  header{background:var(--rojo);color:#fff;box-shadow:0 3px 10px rgba(0,0,0,0.2);}
+  .header-inner{max-width:1100px;margin:auto;display:flex;align-items:center;gap:18px;padding:12px 20px;flex-wrap:wrap;}
+  .logo-box{background:#fff;border-radius:10px;padding:6px 12px;display:flex;align-items:center;gap:8px;min-width:110px;}
+  .logo-fj{font-size:26px;font-weight:900;color:var(--rojo);letter-spacing:-1px;}
+  .logo-text{font-size:10px;color:var(--gris);font-weight:600;line-height:1.2;}
+  .header-title h1{font-size:20px;font-weight:700;}
+  .header-title p{font-size:11px;opacity:.85;margin-top:2px;}
+  .header-user{margin-left:auto;display:flex;align-items:center;gap:10px;}
+  .user-badge{
+    background:rgba(255,255,255,0.2);border-radius:20px;padding:5px 14px;
+    font-size:12px;font-weight:600;display:flex;align-items:center;gap:7px;
+  }
+  .role-tag{
+    background:#fff;color:var(--rojo);border-radius:10px;
+    font-size:10px;font-weight:800;padding:1px 7px;text-transform:uppercase;
+  }
+  .btn-logout{
+    background:rgba(255,255,255,0.15);border:1.5px solid rgba(255,255,255,0.4);
+    color:#fff;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;
+    cursor:pointer;transition:background 0.2s;
+  }
+  .btn-logout:hover{background:rgba(255,255,255,0.3);}
+
+  /* MAIN */
+  main{max-width:1100px;margin:24px auto;padding:0 14px 40px;}
+  .tabs{display:flex;gap:4px;flex-wrap:wrap;}
+  .tab-btn{
+    padding:9px 22px;border:none;border-radius:8px 8px 0 0;
+    background:#d0d0d0;color:var(--gris-medio);font-size:13px;font-weight:600;cursor:pointer;transition:background .2s;
+  }
+  .tab-btn.active{background:#fff;color:var(--rojo);}
+  .card{background:#fff;border-radius:0 12px 12px 12px;box-shadow:var(--sombra);padding:26px 24px 22px;}
+
+  /* FORM */
+  .section-title{font-size:11px;font-weight:700;text-transform:uppercase;color:var(--rojo);letter-spacing:1px;margin:20px 0 9px;padding-bottom:4px;border-bottom:2px solid var(--rojo-light);}
+  .section-title:first-child{margin-top:0;}
+  .grid{display:grid;gap:13px;}
+  .g2{grid-template-columns:repeat(2,1fr);}
+  .g3{grid-template-columns:repeat(3,1fr);}
+  .g4{grid-template-columns:repeat(4,1fr);}
+  @media(max-width:700px){.g2,.g3,.g4{grid-template-columns:1fr 1fr;}}
+  @media(max-width:450px){.g2,.g3,.g4{grid-template-columns:1fr;}}
+  .field{display:flex;flex-direction:column;gap:4px;}
+  .field label{font-size:12px;font-weight:600;color:var(--gris-medio);}
+  .field input,.field select,.field textarea{
+    border:1.5px solid var(--borde);border-radius:7px;padding:8px 11px;
+    font-size:14px;color:var(--gris);background:var(--gris-claro);transition:border .2s,background .2s;width:100%;
+  }
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--rojo);background:#fff;}
+  .field textarea{resize:vertical;min-height:65px;}
+  .toggle-group{display:flex;border-radius:7px;overflow:hidden;border:1.5px solid var(--borde);}
+  .toggle-group label{flex:1;text-align:center;padding:8px 4px;font-size:13px;font-weight:600;cursor:pointer;background:var(--gris-claro);color:var(--gris-medio);transition:background .2s;}
+  .toggle-group input[type=radio]{display:none;}
+  .toggle-group input[type=radio]:checked+label{background:var(--rojo);color:#fff;}
+  .check-row{display:flex;align-items:center;gap:10px;background:var(--gris-claro);border-radius:7px;padding:9px 13px;}
+  .check-row label{font-size:13px;font-weight:600;flex:1;}
+  .check-options{display:flex;gap:12px;}
+  .check-options label{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:500;cursor:pointer;}
+  .check-options input[type=radio]{accent-color:var(--rojo);width:15px;height:15px;}
+  .btn-row{display:flex;gap:10px;margin-top:22px;justify-content:flex-end;flex-wrap:wrap;}
+  .btn{padding:10px 28px;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;transition:background .2s,transform .1s;}
+  .btn:active{transform:scale(.97);}
+  .btn-primary{background:var(--rojo);color:#fff;}
+  .btn-primary:hover{background:var(--rojo-dark);}
+  .btn-secondary{background:var(--gris-claro);color:var(--gris);border:1.5px solid var(--borde);}
+  .btn-secondary:hover{background:#e0e0e0;}
+  .btn-success{background:var(--verde);color:#fff;}
+  .btn-success:hover{background:#155a2d;}
+  .btn-danger{background:#c0392b;color:#fff;}
+  .btn-danger:hover{background:#922b21;}
+
+  /* TABLE */
+  .table-wrap{overflow-x:auto;margin-top:8px;}
+  table{width:100%;border-collapse:collapse;font-size:13px;min-width:600px;}
+  thead tr{background:var(--rojo);color:#fff;}
+  thead th{padding:10px;text-align:left;font-weight:600;white-space:nowrap;}
+  tbody tr:nth-child(even){background:var(--rojo-light);}
+  tbody td{padding:8px 10px;border-bottom:1px solid var(--borde);vertical-align:top;}
+  .badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;}
+  .badge-entrada{background:#d4edda;color:#155724;}
+  .badge-salida{background:#f8d7da;color:#721c24;}
+  .badge-admin{background:#fff3cd;color:#856404;}
+  .badge-usuario{background:#d1ecf1;color:#0c5460;}
+  .empty-row td{text-align:center;color:#aaa;padding:28px;font-style:italic;}
+
+  /* TOAST */
+  #toast{position:fixed;bottom:24px;right:24px;background:#222;color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .3s;z-index:999;max-width:300px;}
+  #toast.show{opacity:1;}
+  #toast.success{background:var(--verde);}
+  #toast.error{background:#c0392b;}
+
+  /* SPINNER */
+  .spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:5px;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  /* MODAL */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:flex;align-items:center;justify-content:center;padding:16px;}
+  .modal-box{background:#fff;border-radius:14px;padding:28px 26px;width:100%;max-width:420px;box-shadow:0 8px 40px rgba(0,0,0,.2);}
+  .modal-title{font-size:16px;font-weight:700;color:var(--rojo);margin-bottom:18px;}
+  .modal-field{margin-bottom:13px;}
+  .modal-field label{display:block;font-size:12px;font-weight:600;color:var(--gris-medio);margin-bottom:4px;}
+  .modal-field input,.modal-field select{width:100%;padding:9px 12px;border:1.5px solid var(--borde);border-radius:7px;font-size:14px;background:var(--gris-claro);}
+  .modal-field input:focus,.modal-field select:focus{outline:none;border-color:var(--rojo);background:#fff;}
+  .modal-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;}
+
+  /* CONFIG */
+  .config-box{background:#fff8e1;border:1.5px solid #f0c040;border-radius:10px;padding:14px 18px;margin-bottom:16px;font-size:13px;}
+  .config-box strong{color:#7a5800;}
+  .config-box input{margin-top:7px;width:100%;padding:8px 11px;border:1.5px solid #f0c040;border-radius:7px;font-size:13px;background:#fffdf0;}
+  pre{margin-top:10px;font-size:11px;background:#f9f9f9;padding:12px;border-radius:7px;overflow-x:auto;line-height:1.5;}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ LOGIN ═══════════════ -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="logo-box">
+        <span class="logo-fj">FJ</span>
+        <div class="logo-text" style="color:var(--gris)">Logística<br>Ecuatoriana</div>
+      </div>
+    </div>
+    <div class="login-title">Bitácora de Seguridad</div>
+    <div class="login-sub">Ingresa tus credenciales para continuar</div>
+    <div class="login-error" id="loginError">⚠️ Usuario o contraseña incorrectos</div>
+    <div class="login-field">
+      <label>Usuario</label>
+      <input type="text" id="loginUser" placeholder="Ingresa tu usuario" autocomplete="username">
+    </div>
+    <div class="login-field">
+      <label>Contraseña</label>
+      <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="btn-login" onclick="doLogin()">Ingresar →</button>
+  </div>
+</div>
+
+<!-- ═══════════════ APP ═══════════════ -->
+<div id="appScreen" style="display:none">
+  <header>
+    <div class="header-inner">
+      <div class="logo-box">
+        <span class="logo-fj">FJ</span>
+        <div class="logo-text">Logística<br>Ecuatoriana</div>
+      </div>
+      <div class="header-title">
+        <h1>📋 Bitácora de Seguridad</h1>
+        <p>Control de ingreso y salida de personal y vehículos</p>
+      </div>
+      <div class="header-user">
+        <div class="user-badge">
+          👤 <span id="headerUsername"></span>
+          <span class="role-tag" id="headerRole"></span>
+        </div>
+        <button class="btn-logout" onclick="doLogout()">Salir</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="tabs" id="tabsBar">
+      <button class="tab-btn active" onclick="showTab('registro')">➕ Nuevo Registro</button>
+      <button class="tab-btn" onclick="showTab('historial')">📄 Historial</button>
+      <button class="tab-btn admin-only" onclick="showTab('usuarios')" style="display:none">👥 Gestión de Usuarios</button>
+      <button class="tab-btn admin-only" onclick="showTab('config')" style="display:none">⚙️ Configuración</button>
+    </div>
+
+    <!-- TAB REGISTRO -->
+    <div class="card" id="tab-registro">
+      <div class="section-title">📅 Datos Generales</div>
+      <div class="grid g4">
+        <div class="field"><label>Fecha *</label><input type="date" id="fecha"></div>
+        <div class="field"><label>Hora *</label><input type="time" id="hora"></div>
+        <div class="field"><label>Guardia *</label><input type="text" id="guardia" placeholder="Nombre del guardia"></div>
+        <div class="field"><label>Compañía</label><input type="text" id="compania" placeholder="Empresa / Compañía"></div>
+      </div>
+      <div class="section-title">🚦 Tipo de Movimiento</div>
+      <div style="max-width:280px">
+        <div class="toggle-group">
+          <input type="radio" name="tipo" id="entrada" value="ENTRADA" checked>
+          <label for="entrada">🟢 ENTRADA</label>
+          <input type="radio" name="tipo" id="salida" value="SALIDA">
+          <label for="salida">🔴 SALIDA</label>
+        </div>
+      </div>
+      <div class="section-title">👤 Datos de Persona</div>
+      <div class="grid g2">
+        <div class="field"><label>Nombre / Apellido *</label><input type="text" id="nombre" placeholder="Nombre completo"></div>
+        <div class="field"><label>Retorno / Destino</label><input type="text" id="destino" placeholder="Lugar de retorno o destino"></div>
+      </div>
+      <div class="section-title">🚗 Datos de Vehículo</div>
+      <div class="grid g4">
+        <div class="field"><label>Placa</label><input type="text" id="placa" placeholder="ABC-1234" style="text-transform:uppercase"></div>
+        <div class="field"><label>Disco</label><input type="text" id="disco" placeholder="Nro. disco"></div>
+        <div class="field"><label>Kilometraje</label><input type="number" id="kilometraje" placeholder="0" min="0"></div>
+        <div class="field"><label>Combustible</label>
+          <select id="combustible">
+            <option value="">-- Seleccionar --</option>
+            <option>1/4</option><option>1/2</option><option>3/4</option><option>Lleno</option><option>Vacío</option>
+          </select>
+        </div>
+      </div>
+      <div class="section-title">✅ Checklist de Equipos</div>
+      <div class="grid g3">
+        <div class="check-row"><label>🛞 Llanta Emergencia</label><div class="check-options"><label><input type="radio" name="llanta" value="Sí"> Sí</label><label><input type="radio" name="llanta" value="No" checked> No</label></div></div>
+        <div class="check-row"><label>🧯 Extintor</label><div class="check-options"><label><input type="radio" name="extintor" value="Sí"> Sí</label><label><input type="radio" name="extintor" value="No" checked> No</label></div></div>
+        <div class="check-row"><label>🧰 Kit Emergencia</label><div class="check-options"><label><input type="radio" name="kit" value="Sí"> Sí</label><label><input type="radio" name="kit" value="No" checked> No</label></div></div>
+      </div>
+      <div class="section-title">📦 Inventario</div>
+      <div class="grid g3">
+        <div class="field"><label>Bines</label><input type="number" id="bines" placeholder="0" min="0"></div>
+        <div class="field"><label>Sacos</label><input type="number" id="sacos" placeholder="0" min="0"></div>
+        <div class="field"><label>Gavetas</label><input type="number" id="gavetas" placeholder="0" min="0"></div>
+      </div>
+      <div class="section-title">📝 Observaciones</div>
+      <div class="field"><textarea id="observaciones" placeholder="Ingrese cualquier observación adicional..."></textarea></div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="limpiarFormulario()">🔄 Limpiar</button>
+        <button class="btn btn-primary" id="btnGuardar" onclick="guardarRegistro()">💾 Guardar Registro</button>
+      </div>
+    </div>
+
+    <!-- TAB HISTORIAL -->
+    <div class="card" id="tab-historial" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
+        <span style="font-weight:700;font-size:16px;color:var(--rojo)">📄 Registros Recientes</span>
+        <button class="btn btn-secondary" onclick="cargarHistorial()" style="padding:7px 16px;font-size:13px;">🔄 Actualizar</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>Fecha</th><th>Hora</th><th>Tipo</th><th>Guardia</th>
+            <th>Nombre</th><th>Compañía</th><th>Placa</th><th>Km</th>
+            <th>Combustible</th><th>Destino</th><th>Bines</th><th>Sacos</th><th>Gavetas</th>
+            <th>Llanta</th><th>Extintor</th><th>Kit</th><th>Observaciones</th>
+          </tr></thead>
+          <tbody id="tbodyHistorial"><tr class="empty-row"><td colspan="17">Cargando registros...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB USUARIOS (solo admin) -->
+    <div class="card" id="tab-usuarios" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+        <span style="font-weight:700;font-size:16px;color:var(--rojo)">👥 Gestión de Usuarios</span>
+        <button class="btn btn-success" onclick="abrirModalUsuario()" style="padding:8px 18px;font-size:13px;">➕ Nuevo Usuario</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Usuario</th><th>Rol</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <tbody id="tbodyUsuarios"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB CONFIG (solo admin) -->
+    <div class="card" id="tab-config" style="display:none">
+      <div class="config-box">
+        <strong>⚙️ URL del Google Apps Script Web App</strong><br>
+        Pega aquí la URL de tu Web App después de desplegarla.
+        <input type="text" id="scriptUrl" placeholder="https://script.google.com/macros/s/XXXXX/exec" oninput="guardarConfig()">
+      </div>
+      <div style="background:#f0f7ff;border:1.5px solid #90c0f0;border-radius:10px;padding:16px 18px;font-size:13px;line-height:1.7;margin-bottom:16px;">
+        <strong style="color:var(--azul);font-size:14px;">📌 Instrucciones</strong><br><br>
+        <strong>1.</strong> Abre tu Google Sheet → Extensiones → Apps Script → pega el código → Guarda.<br>
+        <strong>2.</strong> Implementar → Nueva implementación → Aplicación web → Cualquier persona → Implementar → Copia URL.<br>
+        <strong>3.</strong> Pega la URL arriba. Se guarda automáticamente en tu navegador.<br>
+        <strong>4.</strong> Sube <code>index.html</code> a GitHub → Settings → Pages → Branch: main → Save.
+      </div>
+      <div style="background:#fff3f3;border:1.5px solid var(--rojo);border-radius:10px;padding:14px 18px;">
+        <strong style="color:var(--rojo-dark);font-size:13px;">📋 Código para Google Apps Script</strong>
+        <pre>function doPost(e) {
+  var sheet = SpreadsheetApp
+    .openById('1Aaj7t2bNjOfuvHazjxI6DLXN6cHUEAFc')
+    .getActiveSheet();
+  var data = JSON.parse(e.postData.contents);
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(['FECHA','HORA','ENTRADA/SALIDA','GUARDIA','COMPAÑÍA',
+      'NOMBRE/APELLIDO','PLACA','DISCO','KILOMETRAJE','COMBUSTIBLE',
+      'RETORNO/DESTINO','LLANTA EMERGENCIA','EXTINTOR','KIT',
+      'BINES','SACOS','GAVETAS','OBSERVACIONES']);
+  }
+  sheet.appendRow([data.fecha,data.hora,data.tipo,data.guardia,data.compania,
+    data.nombre,data.placa,data.disco,data.kilometraje,data.combustible,
+    data.destino,data.llanta,data.extintor,data.kit,
+    data.bines,data.sacos,data.gavetas,data.observaciones]);
+  return ContentService
+    .createTextOutput(JSON.stringify({status:'ok'}))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+function doGet(e) {
+  var sheet = SpreadsheetApp
+    .openById('1Aaj7t2bNjOfuvHazjxI6DLXN6cHUEAFc')
+    .getActiveSheet();
+  var data = sheet.getDataRange().getValues();
+  var output = ContentService
+    .createTextOutput(JSON.stringify(data))
+    .setMimeType(ContentService.MimeType.JSON);
+  return output;
+}</pre>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- MODAL USUARIO -->
+<div class="modal-overlay" id="modalUsuario" style="display:none">
+  <div class="modal-box">
+    <div class="modal-title" id="modalTitulo">➕ Nuevo Usuario</div>
+    <div class="modal-field"><label>Usuario *</label><input type="text" id="mUsuario" placeholder="Nombre de usuario"></div>
+    <div class="modal-field"><label>Contraseña *</label><input type="password" id="mClave" placeholder="Contraseña"></div>
+    <div class="modal-field"><label>Rol *</label>
+      <select id="mRol">
+        <option value="usuario">Usuario</option>
+        <option value="admin">Administrador</option>
+      </select>
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="guardarUsuario()">💾 Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ══════════════════════════════════════
+//  USUARIOS – almacenados en localStorage
+// ══════════════════════════════════════
+const USERS_KEY = 'fj_users';
+const SESSION_KEY = 'fj_session';
+const CONFIG_KEY = 'fj_script_url';
+
+function getUsers() {
+  const raw = localStorage.getItem(USERS_KEY);
+  if (raw) return JSON.parse(raw);
+  // Usuario admin predefinido
+  const defaults = [{ id: 1, username: 'LCARRASCO', password: '54321', role: 'admin', activo: true }];
+  localStorage.setItem(USERS_KEY, JSON.stringify(defaults));
+  return defaults;
+}
+function saveUsers(users) { localStorage.setItem(USERS_KEY, JSON.stringify(users)); }
+
+// ══════════════════════════════════════
+//  LOGIN / LOGOUT
+// ══════════════════════════════════════
+let currentUser = null;
+
+function doLogin() {
+  const u = document.getElementById('loginUser').value.trim().toUpperCase();
+  const p = document.getElementById('loginPass').value;
+  const users = getUsers();
+  const found = users.find(x => x.username.toUpperCase() === u && x.password === p && x.activo);
+  if (!found) {
+    document.getElementById('loginError').style.display = 'block';
+    return;
+  }
+  currentUser = found;
+  localStorage.setItem(SESSION_KEY, JSON.stringify(found));
+  document.getElementById('loginError').style.display = 'none';
+  iniciarApp();
+}
+
+// Enter en login
+['loginUser','loginPass'].forEach(id => {
+  document.getElementById(id).addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+});
+
+function doLogout() {
+  currentUser = null;
+  localStorage.removeItem(SESSION_KEY);
+  document.getElementById('appScreen').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+}
+
+function iniciarApp() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('appScreen').style.display = '';
+  document.getElementById('headerUsername').textContent = currentUser.username;
+  document.getElementById('headerRole').textContent = currentUser.role === 'admin' ? 'Admin' : 'Usuario';
+
+  // Mostrar/ocultar tabs de admin
+  document.querySelectorAll('.admin-only').forEach(el => {
+    el.style.display = currentUser.role === 'admin' ? '' : 'none';
+  });
+
+  // Fecha/hora
+  const now = new Date();
+  document.getElementById('fecha').value = now.toISOString().split('T')[0];
+  document.getElementById('hora').value = now.toTimeString().slice(0,5);
+
+  // URL script
+  const url = localStorage.getItem(CONFIG_KEY) || '';
+  if (url) document.getElementById('scriptUrl').value = url;
+
+  showTab('registro');
+}
+
+// Auto-login si hay sesión
+window.addEventListener('DOMContentLoaded', () => {
+  const sess = localStorage.getItem(SESSION_KEY);
+  if (sess) {
+    const u = JSON.parse(sess);
+    const users = getUsers();
+    const fresh = users.find(x => x.id === u.id && x.activo);
+    if (fresh) { currentUser = fresh; iniciarApp(); }
+  }
+});
+
+// ══════════════════════════════════════
+//  TABS
+// ══════════════════════════════════════
+function showTab(tab) {
+  const tabs = ['registro','historial','usuarios','config'];
+  tabs.forEach(t => {
+    document.getElementById('tab-'+t).style.display = t===tab ? '' : 'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach((b,i) => {
+    b.classList.toggle('active', ['registro','historial','usuarios','config'][i]===tab);
+  });
+  if (tab==='historial') cargarHistorial();
+  if (tab==='usuarios') renderUsuarios();
+}
+
+// ══════════════════════════════════════
+//  TOAST
+// ══════════════════════════════════════
+function showToast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'show ' + type;
+  setTimeout(() => t.className='', 3200);
+}
+
+// ══════════════════════════════════════
+//  FORMULARIO
+// ══════════════════════════════════════
+function limpiarFormulario() {
+  const now = new Date();
+  document.getElementById('fecha').value = now.toISOString().split('T')[0];
+  document.getElementById('hora').value = now.toTimeString().slice(0,5);
+  ['guardia','compania','nombre','destino','placa','disco','observaciones'].forEach(id => document.getElementById(id).value='');
+  ['kilometraje','bines','sacos','gavetas'].forEach(id => document.getElementById(id).value='');
+  document.getElementById('combustible').value='';
+  document.getElementById('entrada').checked=true;
+  ['llanta','extintor','kit'].forEach(n => document.querySelector(`input[name="${n}"][value="No"]`).checked=true);
+}
+
+async function guardarRegistro() {
+  const url = localStorage.getItem(CONFIG_KEY) || '';
+  if (!url) { showToast('⚠️ Configura la URL del script (pestaña ⚙️)', 'error'); return; }
+  const fecha = document.getElementById('fecha').value;
+  const hora = document.getElementById('hora').value;
+  const guardia = document.getElementById('guardia').value.trim();
+  const nombre = document.getElementById('nombre').value.trim();
+  if (!fecha||!hora||!guardia||!nombre) { showToast('⚠️ Completa: Fecha, Hora, Guardia y Nombre', 'error'); return; }
+  const payload = {
+    fecha, hora,
+    tipo: document.querySelector('input[name="tipo"]:checked').value,
+    guardia, compania: document.getElementById('compania').value.trim(),
+    nombre, placa: document.getElementById('placa').value.trim().toUpperCase(),
+    disco: document.getElementById('disco').value.trim(),
+    kilometraje: document.getElementById('kilometraje').value||'',
+    combustible: document.getElementById('combustible').value,
+    destino: document.getElementById('destino').value.trim(),
+    llanta: document.querySelector('input[name="llanta"]:checked').value,
+    extintor: document.querySelector('input[name="extintor"]:checked').value,
+    kit: document.querySelector('input[name="kit"]:checked').value,
+    bines: document.getElementById('bines').value||'0',
+    sacos: document.getElementById('sacos').value||'0',
+    gavetas: document.getElementById('gavetas').value||'0',
+    observaciones: document.getElementById('observaciones').value.trim()
+  };
+  const btn = document.getElementById('btnGuardar');
+  btn.disabled=true; btn.innerHTML='<span class="spinner"></span>Guardando...';
+  try {
+    await fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    showToast('✅ Registro guardado en Google Sheets','success');
+    limpiarFormulario();
+  } catch(err) {
+    showToast('❌ Error al guardar. Revisa la URL del script.','error');
+  } finally {
+    btn.disabled=false; btn.innerHTML='💾 Guardar Registro';
+  }
+}
+
+// ══════════════════════════════════════
+//  HISTORIAL
+// ══════════════════════════════════════
+async function cargarHistorial() {
+  const url = localStorage.getItem(CONFIG_KEY) || '';
+  const tbody = document.getElementById('tbodyHistorial');
+  if (!url) { tbody.innerHTML='<tr class="empty-row"><td colspan="17">Configura la URL del script en ⚙️</td></tr>'; return; }
+  tbody.innerHTML='<tr class="empty-row"><td colspan="17">Cargando...</td></tr>';
+  try {
+    const res = await fetch(url,{method:'GET',mode:'cors'});
+    const rows = await res.json();
+    const data = rows.slice(1);
+    if(!data.length){tbody.innerHTML='<tr class="empty-row"><td colspan="17">No hay registros aún</td></tr>';return;}
+    tbody.innerHTML=data.reverse().slice(0,50).map(r=>`<tr>
+      <td>${r[0]||''}</td><td>${r[1]||''}</td>
+      <td><span class="badge ${r[2]==='ENTRADA'?'badge-entrada':'badge-salida'}">${r[2]||''}</span></td>
+      <td>${r[3]||''}</td><td>${r[5]||''}</td><td>${r[4]||''}</td>
+      <td>${r[6]||''}</td><td>${r[8]||''}</td><td>${r[9]||''}</td><td>${r[10]||''}</td>
+      <td>${r[14]||''}</td><td>${r[15]||''}</td><td>${r[16]||''}</td>
+      <td>${r[11]||''}</td><td>${r[12]||''}</td><td>${r[13]||''}</td>
+      <td style="max-width:160px;word-break:break-word">${r[17]||''}</td>
+    </tr>`).join('');
+  } catch(e) {
+    tbody.innerHTML='<tr class="empty-row"><td colspan="17">Error al cargar datos.</td></tr>';
+  }
+}
+
+// ══════════════════════════════════════
+//  GESTIÓN DE USUARIOS
+// ══════════════════════════════════════
+let editingUserId = null;
+
+function renderUsuarios() {
+  const users = getUsers();
+  const tbody = document.getElementById('tbodyUsuarios');
+  tbody.innerHTML = users.map(u => `
+    <tr>
+      <td><strong>${u.username}</strong></td>
+      <td><span class="badge ${u.role==='admin'?'badge-admin':'badge-usuario'}">${u.role==='admin'?'Admin':'Usuario'}</span></td>
+      <td><span class="badge" style="background:${u.activo?'#d4edda':'#f8d7da'};color:${u.activo?'#155724':'#721c24'}">${u.activo?'Activo':'Inactivo'}</span></td>
+      <td style="display:flex;gap:7px;flex-wrap:wrap">
+        <button class="btn btn-secondary" style="padding:5px 12px;font-size:12px" onclick="editarUsuario(${u.id})">✏️ Editar</button>
+        ${u.role!=='admin'||users.filter(x=>x.role==='admin').length>1
+          ? `<button class="btn btn-danger" style="padding:5px 12px;font-size:12px" onclick="eliminarUsuario(${u.id})">🗑️ Eliminar</button>`
+          : '<span style="font-size:11px;color:#aaa;align-self:center">Admin principal</span>'}
+      </td>
+    </tr>`).join('');
+}
+
+function abrirModalUsuario() {
+  editingUserId = null;
+  document.getElementById('modalTitulo').textContent = '➕ Nuevo Usuario';
+  document.getElementById('mUsuario').value = '';
+  document.getElementById('mClave').value = '';
+  document.getElementById('mRol').value = 'usuario';
+  document.getElementById('mUsuario').disabled = false;
+  document.getElementById('modalUsuario').style.display = 'flex';
+}
+
+function editarUsuario(id) {
+  const u = getUsers().find(x=>x.id===id);
+  if(!u) return;
+  editingUserId = id;
+  document.getElementById('modalTitulo').textContent = '✏️ Editar Usuario';
+  document.getElementById('mUsuario').value = u.username;
+  document.getElementById('mClave').value = '';
+  document.getElementById('mRol').value = u.role;
+  document.getElementById('mUsuario').disabled = false;
+  document.getElementById('modalUsuario').style.display = 'flex';
+}
+
+function guardarUsuario() {
+  const username = document.getElementById('mUsuario').value.trim().toUpperCase();
+  const password = document.getElementById('mClave').value;
+  const role = document.getElementById('mRol').value;
+  if (!username) { showToast('⚠️ El nombre de usuario es obligatorio','error'); return; }
+  let users = getUsers();
+  if (editingUserId === null) {
+    // Nuevo
+    if (!password) { showToast('⚠️ La contraseña es obligatoria','error'); return; }
+    if (users.find(x=>x.username.toUpperCase()===username)) { showToast('⚠️ Ese usuario ya existe','error'); return; }
+    const newId = Date.now();
+    users.push({ id: newId, username, password, role, activo: true });
+    showToast('✅ Usuario creado correctamente','success');
+  } else {
+    // Editar
+    const idx = users.findIndex(x=>x.id===editingUserId);
+    if (idx===-1) return;
+    users[idx].username = username;
+    users[idx].role = role;
+    if (password) users[idx].password = password;
+    showToast('✅ Usuario actualizado','success');
+  }
+  saveUsers(users);
+  cerrarModal();
+  renderUsuarios();
+}
+
+function eliminarUsuario(id) {
+  const users = getUsers();
+  const u = users.find(x=>x.id===id);
+  if (!u) return;
+  if (u.id === currentUser.id) { showToast('⚠️ No puedes eliminar tu propio usuario','error'); return; }
+  if (!confirm(`¿Eliminar usuario "${u.username}"?`)) return;
+  saveUsers(users.filter(x=>x.id!==id));
+  renderUsuarios();
+  showToast('🗑️ Usuario eliminado','');
+}
+
+function cerrarModal() {
+  document.getElementById('modalUsuario').style.display = 'none';
+  editingUserId = null;
+}
+
+// Cerrar modal al hacer click fuera
+document.getElementById('modalUsuario').addEventListener('click', e => {
+  if (e.target === e.currentTarget) cerrarModal();
+});
+
+// CONFIG
+function guardarConfig() {
+  localStorage.setItem(CONFIG_KEY, document.getElementById('scriptUrl').value.trim());
+}
+</script>
+</body>
+</html>
