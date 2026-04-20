@@ -3,150 +3,87 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bitácora de Seguridad</title>
+<title>Bitácora de Seguridad – FJ Logística</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: system-ui, -apple-system, Arial, sans-serif; background: #f3f4f6; color: #374151; font-size: 13px; }
 
 /* LOGIN */
-#loginPage {
-  display: flex; align-items: center; justify-content: center;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #1b4332, #2d6a4f 60%, #52796f);
-}
-#loginCard {
-  background: white; border-radius: 12px; padding: 36px 32px 28px;
-  width: 360px; box-shadow: 0 8px 40px rgba(0,0,0,0.25);
-}
+#loginPage { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: linear-gradient(135deg,#1b4332,#2d6a4f 60%,#52796f); }
+#loginCard { background: white; border-radius: 12px; padding: 36px 32px 28px; width: 360px; box-shadow: 0 8px 40px rgba(0,0,0,.25); }
 #loginLogoWrap { display: flex; justify-content: center; margin-bottom: 20px; }
-#loginLogoBox {
-  background: #D62B2B; border-radius: 8px; padding: 7px 13px;
-  display: flex; align-items: center; gap: 7px;
-}
+#loginLogoBox { background: #D62B2B; border-radius: 8px; padding: 7px 13px; display: flex; align-items: center; gap: 7px; }
 #loginLogoFJ { font-size: 22px; font-weight: 800; color: white; letter-spacing: -1px; }
 #loginLogoTxt { font-size: 9px; color: white; font-weight: 600; line-height: 1.3; }
 #loginTitle { text-align: center; font-size: 16px; font-weight: 700; margin-bottom: 4px; }
 #loginSub { text-align: center; font-size: 12px; color: #6b7280; margin-bottom: 20px; }
-#loginErr {
-  display: none; background: #fdecea; border: 1px solid #fca5a5;
-  border-radius: 6px; color: #991b1b; font-size: 12px; padding: 8px 12px; margin-bottom: 12px;
-}
+#loginErr { display: none; background: #fdecea; border: 1px solid #fca5a5; border-radius: 6px; color: #991b1b; font-size: 12px; padding: 8px 12px; margin-bottom: 12px; }
 .loginField { margin-bottom: 14px; }
-.loginField label { display: block; font-size: 11px; font-weight: 700; color: #6b7280; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
-.loginField input {
-  width: 100%; padding: 9px 12px; border: 1.5px solid #e5e7eb;
-  border-radius: 6px; font-size: 13px; background: #f9fafb;
-}
+.loginField label { display: block; font-size: 11px; font-weight: 700; color: #6b7280; margin-bottom: 4px; text-transform: uppercase; letter-spacing: .5px; }
+.loginField input { width: 100%; padding: 9px 12px; border: 1.5px solid #e5e7eb; border-radius: 6px; font-size: 13px; background: #f9fafb; }
 .loginField input:focus { outline: none; border-color: #2d6a4f; background: white; }
-#loginBtn {
-  width: 100%; padding: 11px; background: #2d6a4f; color: white;
-  border: none; border-radius: 7px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 4px;
-}
+#loginBtn { width: 100%; padding: 11px; background: #2d6a4f; color: white; border: none; border-radius: 7px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 4px; }
 #loginBtn:hover { background: #1b4332; }
 
 /* APP */
 #appPage { display: none; min-height: 100vh; }
 
 /* TOPBAR */
-#topbar {
-  background: white; border-bottom: 1px solid #e5e7eb; height: 48px;
-  display: flex; align-items: center; padding: 0 20px; gap: 10px;
-  position: sticky; top: 0; z-index: 100;
-}
-#topLogoBox {
-  background: #D62B2B; border-radius: 6px; padding: 5px 11px;
-  display: flex; align-items: center; gap: 6px;
-}
+#topbar { background: white; border-bottom: 1px solid #e5e7eb; height: 48px; display: flex; align-items: center; padding: 0 20px; gap: 10px; position: sticky; top: 0; z-index: 200; }
+#topLogoBox { background: #D62B2B; border-radius: 6px; padding: 5px 11px; display: flex; align-items: center; gap: 6px; }
 #topLogoFJ { font-size: 16px; font-weight: 800; color: white; letter-spacing: -1px; }
 #topLogoTxt { font-size: 8px; color: white; font-weight: 600; line-height: 1.2; }
 #topDivider { width: 1px; height: 24px; background: #e5e7eb; margin: 0 4px; }
 #topRight { margin-left: auto; display: flex; align-items: center; gap: 12px; }
 #topUsername { font-size: 13px; font-weight: 600; color: #374151; }
-#topRoleBadge {
-  font-size: 10px; font-weight: 700; background: #e8f5e9; color: #1b4332;
-  border-radius: 10px; padding: 2px 8px; text-transform: uppercase;
-}
-#topLogoutBtn {
-  background: none; border: 1px solid #e5e7eb; border-radius: 6px;
-  padding: 5px 12px; font-size: 12px; font-weight: 500; cursor: pointer; color: #6b7280;
-}
+#topRoleBadge { font-size: 10px; font-weight: 700; background: #e8f5e9; color: #1b4332; border-radius: 10px; padding: 2px 8px; text-transform: uppercase; }
+#topLogoutBtn { background: none; border: 1px solid #e5e7eb; border-radius: 6px; padding: 5px 12px; font-size: 12px; font-weight: 500; cursor: pointer; color: #6b7280; }
 #topLogoutBtn:hover { background: #f9fafb; }
 
 /* CONTENT */
-#mainContent { max-width: 1150px; margin: 0 auto; padding: 20px 18px 40px; }
+#mainContent { max-width: 1300px; margin: 0 auto; padding: 20px 18px 40px; }
 #breadcrumb { font-size: 11px; color: #6b7280; margin-bottom: 10px; }
-#pageTitle { font-size: 20px; font-weight: 700; color: #374151; margin-bottom: 3px; }
+#pageTitle { font-size: 20px; font-weight: 700; margin-bottom: 3px; }
 #pageSub { font-size: 12px; color: #6b7280; margin-bottom: 14px; }
-#alertBanner {
-  background: #2d6a4f; color: white; border-radius: 7px;
-  padding: 9px 15px; font-size: 12px; font-weight: 500; margin-bottom: 14px;
-}
+#alertBanner { background: #2d6a4f; color: white; border-radius: 7px; padding: 9px 15px; font-size: 12px; font-weight: 500; margin-bottom: 14px; }
 
 /* TABS */
-#tabsBar {
-  display: flex; border-bottom: 2px solid #e5e7eb;
-  margin-bottom: 0; flex-wrap: wrap;
-}
-.tabBtn {
-  padding: 9px 18px; border: none; background: none; font-size: 13px;
-  font-weight: 500; color: #6b7280; cursor: pointer;
-  border-bottom: 2px solid transparent; margin-bottom: -2px;
-}
+#tabsBar { display: flex; border-bottom: 2px solid #e5e7eb; flex-wrap: wrap; margin-bottom: 0; }
+.tabBtn { padding: 9px 18px; border: none; background: none; font-size: 13px; font-weight: 500; color: #6b7280; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; }
 .tabBtn.active { color: #1b4332; font-weight: 700; border-bottom-color: #2d6a4f; }
 .tabBtn:hover { color: #374151; background: #f9fafb; border-radius: 6px 6px 0 0; }
 
 /* CARD */
-.tabCard {
-  background: white; border: 1px solid #e5e7eb;
-  border-radius: 0 8px 8px 8px; padding: 22px 20px 18px;
-}
+.tabCard { background: white; border: 1px solid #e5e7eb; border-radius: 0 8px 8px 8px; padding: 22px 20px 18px; }
 
 /* SECTION LABEL */
-.sectionLabel {
-  font-size: 11px; font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.6px; color: #52796f; margin: 18px 0 9px;
-  padding-bottom: 5px; border-bottom: 1px solid #e5e7eb;
-}
+.sectionLabel { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: #52796f; margin: 18px 0 9px; padding-bottom: 5px; border-bottom: 1px solid #e5e7eb; }
 .sectionLabel:first-child { margin-top: 0; }
 
-/* GRID */
+/* GRIDS */
 .grid2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; }
 .grid3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
 .grid4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
-.grid5 { display: grid; grid-template-columns: repeat(5,1fr); gap: 12px; }
-@media(max-width:680px){ .grid2,.grid3,.grid4,.grid5 { grid-template-columns: 1fr 1fr; } }
-@media(max-width:420px){ .grid2,.grid3,.grid4,.grid5 { grid-template-columns: 1fr; } }
+.grid6 { display: grid; grid-template-columns: repeat(6,1fr); gap: 12px; }
+@media(max-width:700px){ .grid2,.grid3,.grid4,.grid6 { grid-template-columns: 1fr 1fr; } }
+@media(max-width:420px){ .grid2,.grid3,.grid4,.grid6 { grid-template-columns: 1fr; } }
 
 /* FIELD */
 .formField { display: flex; flex-direction: column; gap: 3px; }
-.formField label {
-  font-size: 11px; font-weight: 700; color: #6b7280;
-  text-transform: uppercase; letter-spacing: 0.4px;
-}
-.formField input, .formField select, .formField textarea {
-  border: 1px solid #e5e7eb; border-radius: 5px; padding: 7px 10px;
-  font-size: 13px; color: #374151; background: #f9fafb; width: 100%;
-}
-.formField input:focus, .formField select:focus, .formField textarea:focus {
-  outline: none; border-color: #2d6a4f; background: white;
-  box-shadow: 0 0 0 3px rgba(45,106,79,0.08);
-}
+.formField label { font-size: 11px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: .4px; }
+.formField input, .formField select, .formField textarea { border: 1px solid #e5e7eb; border-radius: 5px; padding: 7px 10px; font-size: 13px; color: #374151; background: #f9fafb; width: 100%; }
+.formField input:focus, .formField select:focus, .formField textarea:focus { outline: none; border-color: #2d6a4f; background: white; box-shadow: 0 0 0 3px rgba(45,106,79,.08); }
 .formField textarea { resize: vertical; min-height: 60px; }
 
 /* TOGGLE */
 .toggleGroup { display: inline-flex; border: 1px solid #e5e7eb; border-radius: 6px; overflow: hidden; }
 .toggleGroup input[type=radio] { display: none; }
-.toggleGroup label {
-  padding: 7px 22px; font-size: 12px; font-weight: 600; cursor: pointer;
-  background: white; color: #6b7280;
-}
+.toggleGroup label { padding: 7px 22px; font-size: 12px; font-weight: 600; cursor: pointer; background: white; color: #6b7280; }
 .toggleGroup input[type=radio]:checked + label { background: #2d6a4f; color: white; }
 
 /* CHECKLIST */
-.checkRow {
-  display: flex; align-items: center; gap: 8px; background: #f9fafb;
-  border: 1px solid #e5e7eb; border-radius: 5px; padding: 8px 12px;
-}
+.checkRow { display: flex; align-items: center; gap: 8px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 5px; padding: 8px 12px; }
 .checkRowLabel { font-size: 12px; font-weight: 600; flex: 1; color: #374151; }
 .checkOpts { display: flex; gap: 12px; }
 .checkOpts label { display: flex; align-items: center; gap: 4px; font-size: 12px; cursor: pointer; color: #6b7280; }
@@ -154,15 +91,9 @@ body { font-family: system-ui, -apple-system, Arial, sans-serif; background: #f3
 
 /* BUTTONS */
 .btnRow { display: flex; gap: 8px; margin-top: 18px; justify-content: flex-end; flex-wrap: wrap; }
-.btnPrimary {
-  padding: 8px 22px; border: none; border-radius: 6px; font-size: 13px;
-  font-weight: 700; cursor: pointer; background: #2d6a4f; color: white;
-}
+.btnPrimary { padding: 8px 22px; border: none; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; background: #2d6a4f; color: white; }
 .btnPrimary:hover { background: #1b4332; }
-.btnSecondary {
-  padding: 8px 22px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 13px;
-  font-weight: 600; cursor: pointer; background: white; color: #374151;
-}
+.btnSecondary { padding: 8px 22px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; background: white; color: #374151; }
 .btnSecondary:hover { background: #f9fafb; }
 .btnSuccess { padding: 6px 14px; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; background: #059669; color: white; }
 .btnSuccess:hover { background: #047857; }
@@ -170,38 +101,68 @@ body { font-family: system-ui, -apple-system, Arial, sans-serif; background: #f3
 .btnDanger:hover { background: #b91c1c; }
 .btnSmSec { padding: 5px 12px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer; background: white; color: #374151; }
 .btnSmSec:hover { background: #f9fafb; }
+.btnExcel { padding: 7px 16px; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; background: #1D6F42; color: white; display: flex; align-items: center; gap: 6px; }
+.btnExcel:hover { background: #155734; }
 
 /* TABLE */
 .tableTopBar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
 .tableTitle { font-size: 14px; font-weight: 700; color: #374151; }
-.tableWrap { overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 700px; }
-table thead tr { background: #2d6a4f; color: white; }
-table thead th { padding: 9px 9px; text-align: left; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.3px; white-space: nowrap; }
+.tableWrap { overflow-x: auto; max-height: 520px; overflow-y: auto; }
+
+table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 1400px; }
+table thead { position: sticky; top: 0; z-index: 10; }
+table thead tr:first-child { background: #2d6a4f; color: white; }
+table thead tr:first-child th { padding: 9px 8px; text-align: left; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .3px; white-space: nowrap; }
+/* FILTER ROW */
+table thead tr.filterRow { background: #f0fdf4; }
+table thead tr.filterRow th { padding: 3px 4px; }
+table thead tr.filterRow input, table thead tr.filterRow select {
+  width: 100%; padding: 3px 5px; border: 1px solid #d1fae5; border-radius: 4px;
+  font-size: 11px; background: white; color: #374151;
+}
+table thead tr.filterRow input:focus, table thead tr.filterRow select:focus { outline: none; border-color: #2d6a4f; }
+
 table tbody tr:hover { background: #f0fdf4; }
 table tbody tr:nth-child(even) { background: #fafafa; }
 table tbody tr:nth-child(even):hover { background: #f0fdf4; }
-table tbody td { padding: 7px 9px; border-bottom: 1px solid #e5e7eb; vertical-align: middle; }
-.emptyRow td { text-align: center; color: #9ca3af; padding: 28px; font-style: italic; }
+table tbody td { padding: 6px 8px; border-bottom: 1px solid #e5e7eb; vertical-align: middle; white-space: nowrap; }
+.emptyRow td { text-align: center; color: #9ca3af; padding: 28px; font-style: italic; white-space: normal; }
 
+/* BADGES */
 .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
 .badgeEntrada { background: #d1fae5; color: #065f46; }
 .badgeSalida { background: #fee2e2; color: #991b1b; }
 .badgeAdmin { background: #fef3c7; color: #92400e; }
 .badgeUsuario { background: #dbeafe; color: #1e40af; }
+.badgeSupervisor { background: #ede9fe; color: #5b21b6; }
 .badgeActivo { background: #d1fae5; color: #065f46; }
 
 /* SEARCH */
-#histSearch {
-  width: 100%; padding: 8px 12px; border: 1px solid #e5e7eb;
-  border-radius: 6px; font-size: 13px; background: white; margin-bottom: 10px;
-}
+#histSearch { width: 100%; padding: 7px 12px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 13px; background: white; margin-bottom: 8px; }
 #histSearch:focus { outline: none; border-color: #2d6a4f; }
+
+/* ACTION MENU (3 dots) */
+.actionCell { position: relative; text-align: center; }
+.dotsBtn { background: none; border: 1px solid #e5e7eb; border-radius: 4px; padding: 2px 7px; cursor: pointer; font-size: 14px; color: #6b7280; line-height: 1; }
+.dotsBtn:hover { background: #f3f4f6; }
+.actionMenu { position: absolute; right: 0; top: 100%; background: white; border: 1px solid #e5e7eb; border-radius: 7px; box-shadow: 0 4px 16px rgba(0,0,0,.12); z-index: 300; min-width: 140px; padding: 4px 0; }
+.actionMenu button { display: block; width: 100%; text-align: left; padding: 8px 14px; border: none; background: none; font-size: 12px; cursor: pointer; color: #374151; }
+.actionMenu button:hover { background: #f3f4f6; }
+.actionMenu button.danger { color: #dc2626; }
+.actionMenu button:disabled { color: #9ca3af; cursor: not-allowed; }
+.actionMenu button:disabled:hover { background: none; }
 
 /* CONFIG */
 .cfgBox { background: #fffbeb; border: 1px solid #fde68a; border-radius: 7px; padding: 14px 16px; margin-bottom: 13px; font-size: 13px; }
 .cfgBox strong { color: #78350f; }
 .cfgBox input { margin-top: 7px; width: 100%; padding: 8px 11px; border: 1px solid #fde68a; border-radius: 5px; font-size: 13px; background: #fffdf0; }
+.cfgUrlRow { display: flex; gap: 8px; margin-top: 7px; }
+.cfgUrlRow input { flex: 1; padding: 8px 11px; border: 1px solid #fde68a; border-radius: 5px; font-size: 13px; background: #fffdf0; }
+.btnSaveUrl { padding: 8px 18px; background: #2d6a4f; color: white; border: none; border-radius: 5px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+.btnSaveUrl:hover { background: #1b4332; }
+.cfgStatus { font-size: 11px; margin-top: 6px; color: #6b7280; }
+.cfgStatus.ok { color: #065f46; font-weight: 600; }
+.cfgStatus.err { color: #991b1b; }
 .infoBox { background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 7px; padding: 14px 16px; font-size: 13px; line-height: 1.8; margin-bottom: 13px; }
 .infoBox strong { color: #0c4a6e; }
 .codeBox { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 7px; padding: 14px 16px; }
@@ -210,77 +171,51 @@ pre { font-size: 11px; overflow-x: auto; line-height: 1.6; font-family: 'Courier
 code { font-family: 'Courier New', monospace; background: #f3f4f6; padding: 1px 4px; border-radius: 3px; font-size: 11px; }
 
 /* TOAST */
-#toastEl {
-  position: fixed; bottom: 18px; right: 18px; background: #1f2937; color: white;
-  padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 500;
-  opacity: 0; pointer-events: none; transition: opacity 0.25s; z-index: 9999;
-  max-width: 300px; box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-}
+#toastEl { position: fixed; bottom: 18px; right: 18px; background: #1f2937; color: white; padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; opacity: 0; pointer-events: none; transition: opacity .25s; z-index: 9999; max-width: 300px; box-shadow: 0 4px 16px rgba(0,0,0,.2); }
 #toastEl.show { opacity: 1; }
 #toastEl.toastOk { background: #065f46; }
 #toastEl.toastErr { background: #991b1b; }
 
 /* SPINNER */
-.spinner {
-  display: inline-block; width: 12px; height: 12px;
-  border: 2px solid rgba(255,255,255,0.35); border-top-color: white;
-  border-radius: 50%; animation: spin 0.7s linear infinite;
-  vertical-align: middle; margin-right: 4px;
-}
+.spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid rgba(255,255,255,.35); border-top-color: white; border-radius: 50%; animation: spin .7s linear infinite; vertical-align: middle; margin-right: 4px; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* MODAL */
-#modalOverlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.4);
-  z-index: 500; display: flex; align-items: center; justify-content: center; padding: 16px;
-}
-#modalBox {
-  background: white; border-radius: 10px; padding: 22px 20px;
-  width: 100%; max-width: 390px; box-shadow: 0 8px 36px rgba(0,0,0,0.18);
-}
+#modalOverlay { position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 500; display: flex; align-items: center; justify-content: center; padding: 16px; }
+#modalBox { background: white; border-radius: 10px; padding: 22px 20px; width: 100%; max-width: 420px; box-shadow: 0 8px 36px rgba(0,0,0,.18); max-height: 90vh; overflow-y: auto; }
 #modalTitle { font-size: 15px; font-weight: 700; margin-bottom: 13px; padding-bottom: 9px; border-bottom: 1px solid #e5e7eb; }
 .modalField { margin-bottom: 11px; }
-.modalField label { display: block; font-size: 11px; font-weight: 700; color: #6b7280; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.4px; }
+.modalField label { display: block; font-size: 11px; font-weight: 700; color: #6b7280; margin-bottom: 4px; text-transform: uppercase; letter-spacing: .4px; }
 .modalField input, .modalField select { width: 100%; padding: 8px 10px; border: 1px solid #e5e7eb; border-radius: 5px; font-size: 13px; background: #f9fafb; }
 .modalField input:focus, .modalField select:focus { outline: none; border-color: #2d6a4f; }
 #modalBtns { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; padding-top: 11px; border-top: 1px solid #e5e7eb; }
+
+/* EDIT RECORD MODAL */
+#editRecordOverlay { position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 500; display: flex; align-items: center; justify-content: center; padding: 16px; }
+#editRecordBox { background: white; border-radius: 10px; padding: 22px 20px; width: 100%; max-width: 700px; box-shadow: 0 8px 36px rgba(0,0,0,.18); max-height: 92vh; overflow-y: auto; }
+#editRecordTitle { font-size: 15px; font-weight: 700; margin-bottom: 14px; padding-bottom: 9px; border-bottom: 1px solid #e5e7eb; }
+#editRecordBtns { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; padding-top: 11px; border-top: 1px solid #e5e7eb; }
 </style>
 </head>
 <body>
 
-<!-- ══ LOGIN ══ -->
+<!-- LOGIN -->
 <div id="loginPage">
   <div id="loginCard">
-    <div id="loginLogoWrap">
-      <div id="loginLogoBox">
-        <span id="loginLogoFJ">FJ</span>
-        <div id="loginLogoTxt">Logística<br>Ecuatoriana</div>
-      </div>
-    </div>
+    <div id="loginLogoWrap"><div id="loginLogoBox"><span id="loginLogoFJ">FJ</span><div id="loginLogoTxt">Logística<br>Ecuatoriana</div></div></div>
     <div id="loginTitle">Bitácora de Seguridad</div>
     <div id="loginSub">Ingresa tus credenciales para continuar</div>
     <div id="loginErr">Usuario o contraseña incorrectos</div>
-    <div class="loginField">
-      <label>Usuario</label>
-      <input type="text" id="inputUser" placeholder="Nombre de usuario" autocomplete="username">
-    </div>
-    <div class="loginField">
-      <label>Contraseña</label>
-      <input type="password" id="inputPass" placeholder="••••••••" autocomplete="current-password">
-    </div>
+    <div class="loginField"><label>Usuario</label><input type="text" id="inputUser" placeholder="Nombre de usuario" autocomplete="username"></div>
+    <div class="loginField"><label>Contraseña</label><input type="password" id="inputPass" placeholder="••••••••" autocomplete="current-password"></div>
     <button id="loginBtn" onclick="doLogin()">Ingresar →</button>
   </div>
 </div>
 
-<!-- ══ APP ══ -->
+<!-- APP -->
 <div id="appPage">
-
-  <!-- TOPBAR -->
   <div id="topbar">
-    <div id="topLogoBox">
-      <span id="topLogoFJ">FJ</span>
-      <div id="topLogoTxt">Logística<br>Ecuatoriana</div>
-    </div>
+    <div id="topLogoBox"><span id="topLogoFJ">FJ</span><div id="topLogoTxt">Logística<br>Ecuatoriana</div></div>
     <div id="topDivider"></div>
     <div id="topRight">
       <span id="topUsername"></span>
@@ -289,14 +224,12 @@ code { font-family: 'Courier New', monospace; background: #f3f4f6; padding: 1px 
     </div>
   </div>
 
-  <!-- MAIN -->
   <div id="mainContent">
     <div id="breadcrumb">Seguridad / Transacciones / Bitácora de Seguridad</div>
     <div id="pageTitle">Bitácora de Seguridad</div>
     <div id="pageSub">Control de ingreso y salida de personal y vehículos</div>
     <div id="alertBanner">🛡️ Sistema activo — Registro de movimientos en tiempo real</div>
 
-    <!-- TABS BAR -->
     <div id="tabsBar">
       <button class="tabBtn active" id="tabBtnReg" onclick="showTab('reg')">Nuevo Registro</button>
       <button class="tabBtn" id="tabBtnHis" onclick="showTab('his')">Historial</button>
@@ -304,24 +237,24 @@ code { font-family: 'Courier New', monospace; background: #f3f4f6; padding: 1px 
       <button class="tabBtn" id="tabBtnCfg" onclick="showTab('cfg')" style="display:none">Configuración</button>
     </div>
 
-    <!-- ── TAB: REGISTRO ── -->
+    <!-- ── REGISTRO ── -->
     <div class="tabCard" id="tab-reg">
-
       <div class="sectionLabel">Datos Generales</div>
-      <div class="grid5">
+      <div class="grid6">
         <div class="formField"><label>Fecha *</label><input type="date" id="fFecha"></div>
         <div class="formField"><label>Hora *</label><input type="time" id="fHora"></div>
         <div class="formField"><label>Guardia *</label><input type="text" id="fGuardia" placeholder="Nombre del guardia"></div>
+        <div class="formField"><label>Turno</label>
+          <select id="fTurno"><option value="">-- Seleccionar --</option><option value="DÍA">DÍA</option><option value="NOCHE">NOCHE</option></select>
+        </div>
         <div class="formField"><label>Guía</label><input type="text" id="fGuia" placeholder="Nro. de guía"></div>
         <div class="formField"><label>Compañía</label><input type="text" id="fCompania" placeholder="Empresa"></div>
       </div>
 
       <div class="sectionLabel">Tipo de Movimiento</div>
       <div class="toggleGroup">
-        <input type="radio" name="fTipo" id="fEntrada" value="ENTRADA" checked>
-        <label for="fEntrada">▲ ENTRADA</label>
-        <input type="radio" name="fTipo" id="fSalida" value="SALIDA">
-        <label for="fSalida">▼ SALIDA</label>
+        <input type="radio" name="fTipo" id="fEntrada" value="ENTRADA" checked><label for="fEntrada">▲ ENTRADA</label>
+        <input type="radio" name="fTipo" id="fSalida" value="SALIDA"><label for="fSalida">▼ SALIDA</label>
       </div>
 
       <div class="sectionLabel">Datos de Persona</div>
@@ -336,36 +269,15 @@ code { font-family: 'Courier New', monospace; background: #f3f4f6; padding: 1px 
         <div class="formField"><label>Disco</label><input type="text" id="fDisco" placeholder="Nro. disco"></div>
         <div class="formField"><label>Kilometraje</label><input type="number" id="fKm" placeholder="0" min="0"></div>
         <div class="formField"><label>Combustible</label>
-          <select id="fComb">
-            <option value="">-- Seleccionar --</option>
-            <option>1/4</option><option>1/2</option><option>3/4</option><option>Lleno</option><option>Vacío</option>
-          </select>
+          <select id="fComb"><option value="">-- Seleccionar --</option><option>1/4</option><option>1/2</option><option>3/4</option><option>Lleno</option><option>Vacío</option></select>
         </div>
       </div>
 
       <div class="sectionLabel">Checklist de Equipos</div>
       <div class="grid3">
-        <div class="checkRow">
-          <span class="checkRowLabel">Llanta Emergencia</span>
-          <div class="checkOpts">
-            <label><input type="radio" name="fLlanta" value="Sí"> Sí</label>
-            <label><input type="radio" name="fLlanta" value="No" checked> No</label>
-          </div>
-        </div>
-        <div class="checkRow">
-          <span class="checkRowLabel">Extintor</span>
-          <div class="checkOpts">
-            <label><input type="radio" name="fExtintor" value="Sí"> Sí</label>
-            <label><input type="radio" name="fExtintor" value="No" checked> No</label>
-          </div>
-        </div>
-        <div class="checkRow">
-          <span class="checkRowLabel">Kit Emergencia</span>
-          <div class="checkOpts">
-            <label><input type="radio" name="fKit" value="Sí"> Sí</label>
-            <label><input type="radio" name="fKit" value="No" checked> No</label>
-          </div>
-        </div>
+        <div class="checkRow"><span class="checkRowLabel">Llanta Emergencia</span><div class="checkOpts"><label><input type="radio" name="fLlanta" value="Sí"> Sí</label><label><input type="radio" name="fLlanta" value="No" checked> No</label></div></div>
+        <div class="checkRow"><span class="checkRowLabel">Extintor</span><div class="checkOpts"><label><input type="radio" name="fExtintor" value="Sí"> Sí</label><label><input type="radio" name="fExtintor" value="No" checked> No</label></div></div>
+        <div class="checkRow"><span class="checkRowLabel">Kit Emergencia</span><div class="checkOpts"><label><input type="radio" name="fKit" value="Sí"> Sí</label><label><input type="radio" name="fKit" value="No" checked> No</label></div></div>
       </div>
 
       <div class="sectionLabel">Inventario</div>
@@ -376,9 +288,7 @@ code { font-family: 'Courier New', monospace; background: #f3f4f6; padding: 1px 
       </div>
 
       <div class="sectionLabel">Observaciones</div>
-      <div class="formField">
-        <textarea id="fObs" placeholder="Ingrese cualquier observación adicional..."></textarea>
-      </div>
+      <div class="formField"><textarea id="fObs" placeholder="Ingrese cualquier observación adicional..."></textarea></div>
 
       <div class="btnRow">
         <button class="btnSecondary" onclick="limpiarForm()">Limpiar</button>
@@ -386,56 +296,89 @@ code { font-family: 'Courier New', monospace; background: #f3f4f6; padding: 1px 
       </div>
     </div>
 
-    <!-- ── TAB: HISTORIAL ── -->
+    <!-- ── HISTORIAL ── -->
     <div class="tabCard" id="tab-his" style="display:none">
       <div class="tableTopBar">
         <span class="tableTitle">Historial de Registros <span id="histCount" style="font-size:12px;color:#6b7280;font-weight:400"></span></span>
-        <button class="btnSmSec" onclick="renderHistorial()">↺ Actualizar</button>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <button class="btnSmSec" onclick="renderHistorial()">↺ Actualizar</button>
+          <button class="btnExcel" onclick="exportarExcel()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM8.5 19l-2-3.5 2-3.5H10l-1.5 2.5L10 17H8.5zm4 0h-1.3l-1-1.8-1 1.8H8l1.7-3-1.7-3h1.3l1 1.8 1-1.8H12l-1.7 3L12 19zm3.5 0h-1.3l-2.2-6h1.4l1.5 4.5 1.5-4.5H16l-2.2 6H16z"/></svg>
+            Exportar Excel
+          </button>
+        </div>
       </div>
-      <input id="histSearch" placeholder="Buscar en registros..." oninput="filtrarHistorial()">
+      <input id="histSearch" placeholder="🔍 Buscar en todos los registros..." oninput="filtrarHistorial()">
       <div class="tableWrap">
         <table id="histTable">
           <thead>
             <tr>
-              <th>Fecha</th><th>Hora</th><th>Tipo</th><th>Guardia</th><th>Guía</th>
-              <th>Nombre</th><th>Compañía</th><th>Placa</th><th>Km</th><th>Combustible</th>
-              <th>Destino</th><th>Bines</th><th>Sacos</th><th>Gavetas</th>
-              <th>Llanta</th><th>Extintor</th><th>Kit</th><th>Observaciones</th>
+              <th></th>
+              <th>Fecha</th><th>Hora</th><th>Movimiento</th><th>Guardia</th><th>Turno</th>
+              <th>Guía</th><th>Compañía</th><th>Nombre/Apellido</th><th>Placa</th><th>Disco</th>
+              <th>Kilometraje</th><th>Combustible</th><th>Retorno/Destino</th>
+              <th>Llanta Emerg.</th><th>Extintor</th><th>Kit</th>
+              <th>Bines</th><th>Sacos</th><th>Gavetas</th><th>Observaciones</th>
+            </tr>
+            <tr class="filterRow" id="filterRow">
+              <th></th>
+              <th><input type="date" id="flt_fecha" oninput="filtrarHistorial()"></th>
+              <th><input type="time" id="flt_hora" oninput="filtrarHistorial()"></th>
+              <th><select id="flt_tipo" onchange="filtrarHistorial()"><option value="">Todos</option><option>ENTRADA</option><option>SALIDA</option></select></th>
+              <th><input placeholder="Guardia" id="flt_guardia" oninput="filtrarHistorial()"></th>
+              <th><select id="flt_turno" onchange="filtrarHistorial()"><option value="">Todos</option><option>DÍA</option><option>NOCHE</option></select></th>
+              <th><input placeholder="Guía" id="flt_guia" oninput="filtrarHistorial()"></th>
+              <th><input placeholder="Compañía" id="flt_compania" oninput="filtrarHistorial()"></th>
+              <th><input placeholder="Nombre" id="flt_nombre" oninput="filtrarHistorial()"></th>
+              <th><input placeholder="Placa" id="flt_placa" oninput="filtrarHistorial()"></th>
+              <th><input placeholder="Disco" id="flt_disco" oninput="filtrarHistorial()"></th>
+              <th><input placeholder="Km" id="flt_km" oninput="filtrarHistorial()"></th>
+              <th><select id="flt_comb" onchange="filtrarHistorial()"><option value="">Todos</option><option>1/4</option><option>1/2</option><option>3/4</option><option>Lleno</option><option>Vacío</option></select></th>
+              <th><input placeholder="Destino" id="flt_destino" oninput="filtrarHistorial()"></th>
+              <th><select id="flt_llanta" onchange="filtrarHistorial()"><option value="">Todos</option><option>Sí</option><option>No</option></select></th>
+              <th><select id="flt_extintor" onchange="filtrarHistorial()"><option value="">Todos</option><option>Sí</option><option>No</option></select></th>
+              <th><select id="flt_kit" onchange="filtrarHistorial()"><option value="">Todos</option><option>Sí</option><option>No</option></select></th>
+              <th><input placeholder="Bines" id="flt_bines" oninput="filtrarHistorial()"></th>
+              <th><input placeholder="Sacos" id="flt_sacos" oninput="filtrarHistorial()"></th>
+              <th><input placeholder="Gavetas" id="flt_gavetas" oninput="filtrarHistorial()"></th>
+              <th><input placeholder="Obs." id="flt_obs" oninput="filtrarHistorial()"></th>
             </tr>
           </thead>
-          <tbody id="histBody">
-            <tr class="emptyRow"><td colspan="18">No hay registros aún</td></tr>
-          </tbody>
+          <tbody id="histBody"><tr class="emptyRow"><td colspan="21">No hay registros aún</td></tr></tbody>
         </table>
       </div>
     </div>
 
-    <!-- ── TAB: USUARIOS ── -->
+    <!-- ── USUARIOS ── -->
     <div class="tabCard" id="tab-usr" style="display:none">
       <div class="tableTopBar">
         <span class="tableTitle">Gestión de Usuarios</span>
         <button class="btnSuccess" onclick="abrirModalUsr()">+ Nuevo Usuario</button>
       </div>
       <div class="tableWrap">
-        <table>
+        <table style="min-width:400px">
           <thead><tr><th>Usuario</th><th>Rol</th><th>Estado</th><th>Acciones</th></tr></thead>
           <tbody id="usrBody"></tbody>
         </table>
       </div>
     </div>
 
-    <!-- ── TAB: CONFIG ── -->
+    <!-- ── CONFIG ── -->
     <div class="tabCard" id="tab-cfg" style="display:none">
       <div class="cfgBox">
         <strong>URL del Google Apps Script Web App</strong><br>
-        Pega aquí la URL de tu Web App después de desplegarla.
-        <input type="text" id="cfgUrlInput" placeholder="https://script.google.com/macros/s/XXXXX/exec" oninput="guardarUrl(this.value)">
+        Ingresa la URL y presiona <strong>Guardar URL</strong> para activar la sincronización con Google Sheets en todas las secciones.
+        <div class="cfgUrlRow">
+          <input type="text" id="cfgUrlInput" placeholder="https://script.google.com/macros/s/XXXXX/exec">
+          <button class="btnSaveUrl" onclick="guardarUrl()">💾 Guardar URL</button>
+        </div>
+        <div class="cfgStatus" id="cfgStatus"></div>
       </div>
       <div class="infoBox">
         <strong>Instrucciones de configuración</strong><br>
-        <strong>1.</strong> Abre tu Google Sheet → Extensiones → Apps Script → pega el código → Guarda (Ctrl+S).<br>
+        <strong>1.</strong> Abre tu Google Sheet → Extensiones → Apps Script → pega el código de abajo → Guarda (Ctrl+S).<br>
         <strong>2.</strong> Implementar → Nueva implementación → Aplicación web → Ejecutar como: Yo → Quién tiene acceso: Cualquier persona → Implementar → <strong>Copia la URL</strong>.<br>
-        <strong>3.</strong> Pega la URL en el campo de arriba.<br>
+        <strong>3.</strong> Pega la URL arriba y presiona <strong>Guardar URL</strong>. Queda activa para todos hasta que un Admin la cambie.<br>
         <strong>4.</strong> GitHub Pages: sube <code>index.html</code> → Settings → Pages → Branch: main → Save.
       </div>
       <div class="codeBox">
@@ -446,14 +389,18 @@ code { font-family: 'Courier New', monospace; background: #f3f4f6; padding: 1px 
     .getActiveSheet();
   var d = JSON.parse(e.postData.contents);
   if (sheet.getLastRow() === 0) {
-    sheet.appendRow(['FECHA','HORA','ENTRADA/SALIDA','GUARDIA','GUÍA',
+    sheet.appendRow(['FECHA','HORA','MOVIMIENTO','GUARDIA','TURNO','GUÍA',
       'COMPAÑÍA','NOMBRE/APELLIDO','PLACA','DISCO','KILOMETRAJE',
       'COMBUSTIBLE','RETORNO/DESTINO','LLANTA EMERGENCIA',
       'EXTINTOR','KIT','BINES','SACOS','GAVETAS','OBSERVACIONES']);
   }
-  sheet.appendRow([d.fecha,d.hora,d.tipo,d.guardia,d.guia,d.compania,
-    d.nombre,d.placa,d.disco,d.km,d.comb,d.destino,
-    d.llanta,d.extintor,d.kit,d.bines,d.sacos,d.gavetas,d.obs]);
+  sheet.appendRow([d.fecha,d.hora,d.tipo,d.guardia,d.turno,d.guia,d.compania,
+    d.nombre,d.placa,d.disco,d.km ? Number(d.km) : '',d.comb,d.destino,
+    d.llanta,d.extintor,d.kit,
+    d.bines ? Number(d.bines) : 0,
+    d.sacos ? Number(d.sacos) : 0,
+    d.gavetas ? Number(d.gavetas) : 0,
+    d.obs]);
   return ContentService
     .createTextOutput(JSON.stringify({status:'ok'}))
     .setMimeType(ContentService.MimeType.JSON);
@@ -469,18 +416,21 @@ function doGet(e) {
       </div>
     </div>
 
-  </div><!-- /mainContent -->
-</div><!-- /appPage -->
+  </div>
+</div>
 
-<!-- ══ MODAL USUARIO ══ -->
+<!-- MODAL USUARIO -->
 <div id="modalOverlay" style="display:none">
   <div id="modalBox">
     <div id="modalTitle">Nuevo Usuario</div>
     <div class="modalField"><label>Usuario *</label><input type="text" id="mUser" placeholder="Nombre de usuario"></div>
     <div class="modalField"><label>Contraseña *</label><input type="password" id="mPass" placeholder="Contraseña"></div>
-    <div class="modalField">
-      <label>Rol *</label>
-      <select id="mRol"><option value="usuario">Usuario</option><option value="admin">Administrador</option></select>
+    <div class="modalField"><label>Rol *</label>
+      <select id="mRol">
+        <option value="usuario">Usuario</option>
+        <option value="supervisor">Supervisor</option>
+        <option value="admin">Administrador</option>
+      </select>
     </div>
     <div id="modalBtns">
       <button class="btnSecondary" onclick="cerrarModal()">Cancelar</button>
@@ -489,325 +439,545 @@ function doGet(e) {
   </div>
 </div>
 
+<!-- MODAL EDITAR REGISTRO -->
+<div id="editRecordOverlay" style="display:none">
+  <div id="editRecordBox">
+    <div id="editRecordTitle">✏️ Editar Registro</div>
+    <div class="grid6">
+      <div class="formField"><label>Fecha</label><input type="date" id="er_fecha"></div>
+      <div class="formField"><label>Hora</label><input type="time" id="er_hora"></div>
+      <div class="formField"><label>Guardia</label><input type="text" id="er_guardia"></div>
+      <div class="formField"><label>Turno</label><select id="er_turno"><option value="">--</option><option>DÍA</option><option>NOCHE</option></select></div>
+      <div class="formField"><label>Guía</label><input type="text" id="er_guia"></div>
+      <div class="formField"><label>Compañía</label><input type="text" id="er_compania"></div>
+    </div>
+    <div style="margin-top:12px">
+      <div class="formField"><label>Tipo de Movimiento</label>
+        <select id="er_tipo"><option value="ENTRADA">ENTRADA</option><option value="SALIDA">SALIDA</option></select>
+      </div>
+    </div>
+    <div class="grid2" style="margin-top:12px">
+      <div class="formField"><label>Nombre / Apellido</label><input type="text" id="er_nombre"></div>
+      <div class="formField"><label>Retorno / Destino</label><input type="text" id="er_destino"></div>
+    </div>
+    <div class="grid4" style="margin-top:12px">
+      <div class="formField"><label>Placa</label><input type="text" id="er_placa"></div>
+      <div class="formField"><label>Disco</label><input type="text" id="er_disco"></div>
+      <div class="formField"><label>Kilometraje</label><input type="number" id="er_km"></div>
+      <div class="formField"><label>Combustible</label><select id="er_comb"><option value="">--</option><option>1/4</option><option>1/2</option><option>3/4</option><option>Lleno</option><option>Vacío</option></select></div>
+    </div>
+    <div class="grid3" style="margin-top:12px">
+      <div class="formField"><label>Llanta Emergencia</label><select id="er_llanta"><option>Sí</option><option>No</option></select></div>
+      <div class="formField"><label>Extintor</label><select id="er_extintor"><option>Sí</option><option>No</option></select></div>
+      <div class="formField"><label>Kit</label><select id="er_kit"><option>Sí</option><option>No</option></select></div>
+    </div>
+    <div class="grid3" style="margin-top:12px">
+      <div class="formField"><label>Bines</label><input type="number" id="er_bines" min="0"></div>
+      <div class="formField"><label>Sacos</label><input type="number" id="er_sacos" min="0"></div>
+      <div class="formField"><label>Gavetas</label><input type="number" id="er_gavetas" min="0"></div>
+    </div>
+    <div class="formField" style="margin-top:12px"><label>Observaciones</label><textarea id="er_obs"></textarea></div>
+    <div id="editRecordBtns">
+      <button class="btnSecondary" onclick="cerrarEditRecord()">Cancelar</button>
+      <button class="btnPrimary" onclick="guardarEditRecord()">Guardar Cambios</button>
+    </div>
+  </div>
+</div>
+
+<!-- ACTION MENU BACKDROP -->
+<div id="menuBackdrop" style="display:none;position:fixed;inset:0;z-index:299;" onclick="cerrarMenus()"></div>
+
 <div id="toastEl"></div>
 
 <script>
-// ════════════════════════════════════
-//  ESTADO GLOBAL
-// ════════════════════════════════════
+// ════════════════ ESTADO ════════════════
 var APP = {
-  users: [{ id: 1, username: 'LCARRASCO', password: '54321', role: 'admin', activo: true }],
+  users: [{ id:1, username:'LCARRASCO', password:'54321', role:'admin', activo:true }],
   historial: [],
   scriptUrl: '',
   currentUser: null,
-  editId: null
+  editId: null,
+  editRecordIdx: null,
+  filteredData: []
 };
 
-// Cargar desde localStorage sin bloquear
-try {
-  var _u = localStorage.getItem('fjUsers');
-  if (_u) APP.users = JSON.parse(_u);
-  var _h = localStorage.getItem('fjHist');
-  if (_h) APP.historial = JSON.parse(_h);
-  var _url = localStorage.getItem('fjUrl');
-  if (_url) APP.scriptUrl = _url;
-} catch(e) {}
+// localStorage helpers
+function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+function lsSet(k,v){ try{ localStorage.setItem(k,typeof v==='string'?v:JSON.stringify(v)); }catch(e){} }
+function lsDel(k){ try{ localStorage.removeItem(k); }catch(e){} }
 
-function ls_set(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {} }
-function ls_str(key, val) { try { localStorage.setItem(key, val); } catch(e) {} }
+// Init
+(function(){
+  try{
+    var u=lsGet('fjUsers'); if(u) APP.users=JSON.parse(u);
+    var h=lsGet('fjHist'); if(h) APP.historial=JSON.parse(h);
+    var url=lsGet('fjUrl'); if(url) APP.scriptUrl=url;
+  }catch(e){}
+})();
 
-// ════════════════════════════════════
-//  INIT
-// ════════════════════════════════════
-window.onload = function() {
-  // Intentar auto-login
-  try {
-    var sess = localStorage.getItem('fjSess');
-    if (sess) {
-      var su = JSON.parse(sess);
-      var fresh = APP.users.find(function(x){ return x.id === su.id && x.activo; });
-      if (fresh) { APP.currentUser = fresh; iniciarApp(); return; }
-    }
-  } catch(e) {}
-  // Mostrar login
-  document.getElementById('loginPage').style.display = 'flex';
-  document.getElementById('appPage').style.display = 'none';
+window.onload = function(){
+  try{
+    var sess=lsGet('fjSess');
+    if(sess){ var su=JSON.parse(sess); var f=APP.users.find(function(x){return x.id===su.id&&x.activo;}); if(f){APP.currentUser=f;iniciarApp();return;} }
+  }catch(e){}
+  document.getElementById('loginPage').style.display='flex';
+  document.getElementById('appPage').style.display='none';
 };
 
-// ════════════════════════════════════
-//  LOGIN / LOGOUT
-// ════════════════════════════════════
-document.getElementById('inputUser').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
-document.getElementById('inputPass').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
+// ════════════════ LOGIN ════════════════
+document.getElementById('inputUser').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
+document.getElementById('inputPass').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
 
-function doLogin() {
-  var u = (document.getElementById('inputUser').value || '').trim().toUpperCase();
-  var p = document.getElementById('inputPass').value || '';
-  var found = APP.users.find(function(x){ return x.username.toUpperCase() === u && x.password === p && x.activo; });
-  if (!found) { document.getElementById('loginErr').style.display = 'block'; return; }
-  APP.currentUser = found;
-  ls_set('fjSess', found);
-  document.getElementById('loginErr').style.display = 'none';
+function doLogin(){
+  var u=(document.getElementById('inputUser').value||'').trim().toUpperCase();
+  var p=document.getElementById('inputPass').value||'';
+  var found=APP.users.find(function(x){return x.username.toUpperCase()===u&&x.password===p&&x.activo;});
+  if(!found){document.getElementById('loginErr').style.display='block';return;}
+  APP.currentUser=found; lsSet('fjSess',found);
+  document.getElementById('loginErr').style.display='none';
   iniciarApp();
 }
 
-function doLogout() {
-  APP.currentUser = null;
-  try { localStorage.removeItem('fjSess'); } catch(e) {}
-  document.getElementById('appPage').style.display = 'none';
-  document.getElementById('loginPage').style.display = 'flex';
-  document.getElementById('inputUser').value = '';
-  document.getElementById('inputPass').value = '';
+function doLogout(){
+  APP.currentUser=null; lsDel('fjSess');
+  document.getElementById('appPage').style.display='none';
+  document.getElementById('loginPage').style.display='flex';
+  document.getElementById('inputUser').value='';
+  document.getElementById('inputPass').value='';
 }
 
-function iniciarApp() {
-  document.getElementById('loginPage').style.display = 'none';
-  document.getElementById('appPage').style.display = 'block';
-
-  document.getElementById('topUsername').textContent = APP.currentUser.username;
-  document.getElementById('topRoleBadge').textContent = APP.currentUser.role === 'admin' ? 'Administrador' : 'Usuario';
-
-  var isAdmin = APP.currentUser.role === 'admin';
-  document.getElementById('tabBtnUsr').style.display = isAdmin ? 'inline-block' : 'none';
-  document.getElementById('tabBtnCfg').style.display = isAdmin ? 'inline-block' : 'none';
-
-  if (APP.scriptUrl) document.getElementById('cfgUrlInput').value = APP.scriptUrl;
-
-  var now = new Date();
-  document.getElementById('fFecha').value = now.toISOString().split('T')[0];
-  document.getElementById('fHora').value = now.toTimeString().slice(0, 5);
-
+function iniciarApp(){
+  document.getElementById('loginPage').style.display='none';
+  document.getElementById('appPage').style.display='block';
+  document.getElementById('topUsername').textContent=APP.currentUser.username;
+  var roleLabel = {admin:'Administrador', supervisor:'Supervisor', usuario:'Usuario'};
+  document.getElementById('topRoleBadge').textContent=roleLabel[APP.currentUser.role]||APP.currentUser.role;
+  var isAdmin=APP.currentUser.role==='admin';
+  document.getElementById('tabBtnUsr').style.display=isAdmin?'inline-block':'none';
+  document.getElementById('tabBtnCfg').style.display=isAdmin?'inline-block':'none';
+  if(APP.scriptUrl) document.getElementById('cfgUrlInput').value=APP.scriptUrl;
+  if(APP.scriptUrl){ var st=document.getElementById('cfgStatus'); st.textContent='✅ URL guardada y activa'; st.className='cfgStatus ok'; }
+  var now=new Date();
+  document.getElementById('fFecha').value=now.toISOString().split('T')[0];
+  document.getElementById('fHora').value=now.toTimeString().slice(0,5);
   showTab('reg');
 }
 
-// ════════════════════════════════════
-//  TABS
-// ════════════════════════════════════
-function showTab(t) {
-  var tabs = ['reg', 'his', 'usr', 'cfg'];
-  tabs.forEach(function(id) {
-    document.getElementById('tab-' + id).style.display = id === t ? 'block' : 'none';
+// ════════════════ TABS ════════════════
+function showTab(t){
+  ['reg','his','usr','cfg'].forEach(function(id){
+    document.getElementById('tab-'+id).style.display=id===t?'block':'none';
   });
-  var btns = ['tabBtnReg','tabBtnHis','tabBtnUsr','tabBtnCfg'];
-  var names = ['reg','his','usr','cfg'];
-  btns.forEach(function(bid, i) {
-    var el = document.getElementById(bid);
-    if (el) { el.className = names[i] === t ? 'tabBtn active' : 'tabBtn'; }
+  ['Reg','His','Usr','Cfg'].forEach(function(s,i){
+    var el=document.getElementById('tabBtn'+s); if(el) el.className=['reg','his','usr','cfg'][i]===t?'tabBtn active':'tabBtn';
   });
-  if (t === 'his') renderHistorial();
-  if (t === 'usr') renderUsuarios();
+  if(t==='his') renderHistorial();
+  if(t==='usr') renderUsuarios();
 }
 
-// ════════════════════════════════════
-//  TOAST
-// ════════════════════════════════════
-function showToast(msg, type) {
-  var el = document.getElementById('toastEl');
-  el.textContent = msg;
-  el.className = 'show' + (type === 'ok' ? ' toastOk' : type === 'err' ? ' toastErr' : '');
-  setTimeout(function(){ el.className = ''; }, 3000);
+// ════════════════ TOAST ════════════════
+function showToast(msg,type){
+  var el=document.getElementById('toastEl');
+  el.textContent=msg; el.className='show'+(type==='ok'?' toastOk':type==='err'?' toastErr':'');
+  setTimeout(function(){el.className='';},3200);
 }
 
-// ════════════════════════════════════
-//  FORMULARIO
-// ════════════════════════════════════
-function limpiarForm() {
-  var now = new Date();
-  document.getElementById('fFecha').value = now.toISOString().split('T')[0];
-  document.getElementById('fHora').value = now.toTimeString().slice(0, 5);
-  ['fGuardia','fGuia','fCompania','fNombre','fDestino','fPlaca','fDisco','fObs'].forEach(function(id){
-    document.getElementById(id).value = '';
-  });
-  ['fKm','fBines','fSacos','fGavetas'].forEach(function(id){ document.getElementById(id).value = ''; });
-  document.getElementById('fComb').value = '';
-  document.getElementById('fEntrada').checked = true;
-  ['fLlanta','fExtintor','fKit'].forEach(function(name){
-    var el = document.querySelector('input[name="' + name + '"][value="No"]');
-    if (el) el.checked = true;
-  });
+// ════════════════ FORM ════════════════
+function limpiarForm(){
+  var now=new Date();
+  document.getElementById('fFecha').value=now.toISOString().split('T')[0];
+  document.getElementById('fHora').value=now.toTimeString().slice(0,5);
+  ['fGuardia','fGuia','fCompania','fNombre','fDestino','fPlaca','fDisco','fObs'].forEach(function(id){document.getElementById(id).value='';});
+  ['fKm','fBines','fSacos','fGavetas'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('fComb').value='';
+  document.getElementById('fTurno').value='';
+  document.getElementById('fEntrada').checked=true;
+  ['fLlanta','fExtintor','fKit'].forEach(function(n){var el=document.querySelector('input[name="'+n+'"][value="No"]');if(el)el.checked=true;});
 }
 
-function getV(id) { return (document.getElementById(id).value || '').trim(); }
-function getR(name) { var el = document.querySelector('input[name="' + name + '"]:checked'); return el ? el.value : 'No'; }
+function getV(id){return (document.getElementById(id).value||'').trim();}
+function getR(name){var el=document.querySelector('input[name="'+name+'"]:checked');return el?el.value:'No';}
 
-function guardarRegistro() {
-  var fecha = getV('fFecha'), hora = getV('fHora'), guardia = getV('fGuardia'), nombre = getV('fNombre');
-  if (!fecha || !hora || !guardia || !nombre) {
-    showToast('Completa los campos obligatorios: Fecha, Hora, Guardia y Nombre', 'err'); return;
+function guardarRegistro(){
+  var fecha=getV('fFecha'),hora=getV('fHora'),guardia=getV('fGuardia'),nombre=getV('fNombre');
+  if(!fecha||!hora||!guardia||!nombre){showToast('Completa: Fecha, Hora, Guardia y Nombre','err');return;}
+  var reg={
+    fecha:fecha, hora:hora, tipo:getR('fTipo'),
+    guardia:guardia, turno:document.getElementById('fTurno').value||'',
+    guia:getV('fGuia'), compania:getV('fCompania'),
+    nombre:nombre, placa:getV('fPlaca').toUpperCase(), disco:getV('fDisco'),
+    km:document.getElementById('fKm').value||'',
+    comb:document.getElementById('fComb').value||'',
+    destino:getV('fDestino'),
+    llanta:getR('fLlanta'), extintor:getR('fExtintor'), kit:getR('fKit'),
+    bines:document.getElementById('fBines').value||'0',
+    sacos:document.getElementById('fSacos').value||'0',
+    gavetas:document.getElementById('fGavetas').value||'0',
+    obs:getV('fObs'),
+    _id: Date.now()
+  };
+  APP.historial.unshift(reg);
+  if(APP.historial.length>500) APP.historial=APP.historial.slice(0,500);
+  lsSet('fjHist',APP.historial);
+
+  var btn=document.getElementById('btnGuardar');
+  btn.disabled=true; btn.innerHTML='<span class="spinner"></span>Guardando...';
+
+  function finish(msg,type){showToast(msg,type);limpiarForm();btn.disabled=false;btn.innerHTML='Guardar Registro';}
+
+  if(APP.scriptUrl){
+    fetch(APP.scriptUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(reg)})
+      .then(function(){finish('Registro guardado correctamente','ok');})
+      .catch(function(){finish('Guardado localmente. Sin conexión con Sheets.','ok');});
+  } else {
+    finish('Registro guardado localmente','ok');
   }
-  var reg = {
-    fecha: fecha, hora: hora, tipo: getR('fTipo'),
-    guardia: guardia, guia: getV('fGuia'), compania: getV('fCompania'),
-    nombre: nombre, placa: getV('fPlaca').toUpperCase(), disco: getV('fDisco'),
-    km: document.getElementById('fKm').value || '',
-    comb: document.getElementById('fComb').value || '',
-    destino: getV('fDestino'),
-    llanta: getR('fLlanta'), extintor: getR('fExtintor'), kit: getR('fKit'),
-    bines: document.getElementById('fBines').value || '0',
-    sacos: document.getElementById('fSacos').value || '0',
-    gavetas: document.getElementById('fGavetas').value || '0',
-    obs: getV('fObs')
+}
+
+// ════════════════ HISTORIAL ════════════════
+function renderHistorial(){
+  APP.filteredData = APP.historial.slice();
+  aplicarFiltros();
+}
+
+function filtrarHistorial(){
+  aplicarFiltros();
+}
+
+function aplicarFiltros(){
+  var q=(document.getElementById('histSearch').value||'').toLowerCase();
+  var flt={
+    fecha:getV('flt_fecha'), hora:getV('flt_hora'), tipo:(document.getElementById('flt_tipo').value||'').toLowerCase(),
+    guardia:(getV('flt_guardia')||'').toLowerCase(), turno:(document.getElementById('flt_turno').value||'').toLowerCase(),
+    guia:(getV('flt_guia')||'').toLowerCase(), compania:(getV('flt_compania')||'').toLowerCase(),
+    nombre:(getV('flt_nombre')||'').toLowerCase(), placa:(getV('flt_placa')||'').toLowerCase(),
+    disco:(getV('flt_disco')||'').toLowerCase(), km:(getV('flt_km')||'').toLowerCase(),
+    comb:(document.getElementById('flt_comb').value||'').toLowerCase(),
+    destino:(getV('flt_destino')||'').toLowerCase(),
+    llanta:(document.getElementById('flt_llanta').value||'').toLowerCase(),
+    extintor:(document.getElementById('flt_extintor').value||'').toLowerCase(),
+    kit:(document.getElementById('flt_kit').value||'').toLowerCase(),
+    bines:(getV('flt_bines')||'').toLowerCase(), sacos:(getV('flt_sacos')||'').toLowerCase(),
+    gavetas:(getV('flt_gavetas')||'').toLowerCase(), obs:(getV('flt_obs')||'').toLowerCase()
   };
 
-  APP.historial.unshift(reg);
-  if (APP.historial.length > 500) APP.historial = APP.historial.slice(0, 500);
-  ls_set('fjHist', APP.historial);
+  var data = APP.historial.filter(function(r){
+    if(q && !Object.values(r).some(function(v){return String(v).toLowerCase().indexOf(q)>=0;})) return false;
+    if(flt.fecha && r.fecha !== flt.fecha) return false;
+    if(flt.hora && r.hora !== flt.hora) return false;
+    if(flt.tipo && (r.tipo||'').toLowerCase().indexOf(flt.tipo)<0) return false;
+    if(flt.guardia && (r.guardia||'').toLowerCase().indexOf(flt.guardia)<0) return false;
+    if(flt.turno && (r.turno||'').toLowerCase().indexOf(flt.turno)<0) return false;
+    if(flt.guia && (r.guia||'').toLowerCase().indexOf(flt.guia)<0) return false;
+    if(flt.compania && (r.compania||'').toLowerCase().indexOf(flt.compania)<0) return false;
+    if(flt.nombre && (r.nombre||'').toLowerCase().indexOf(flt.nombre)<0) return false;
+    if(flt.placa && (r.placa||'').toLowerCase().indexOf(flt.placa)<0) return false;
+    if(flt.disco && (r.disco||'').toLowerCase().indexOf(flt.disco)<0) return false;
+    if(flt.km && String(r.km||'').toLowerCase().indexOf(flt.km)<0) return false;
+    if(flt.comb && (r.comb||'').toLowerCase().indexOf(flt.comb)<0) return false;
+    if(flt.destino && (r.destino||'').toLowerCase().indexOf(flt.destino)<0) return false;
+    if(flt.llanta && (r.llanta||'').toLowerCase().indexOf(flt.llanta)<0) return false;
+    if(flt.extintor && (r.extintor||'').toLowerCase().indexOf(flt.extintor)<0) return false;
+    if(flt.kit && (r.kit||'').toLowerCase().indexOf(flt.kit)<0) return false;
+    if(flt.bines && String(r.bines||'').indexOf(flt.bines)<0) return false;
+    if(flt.sacos && String(r.sacos||'').indexOf(flt.sacos)<0) return false;
+    if(flt.gavetas && String(r.gavetas||'').indexOf(flt.gavetas)<0) return false;
+    if(flt.obs && (r.obs||'').toLowerCase().indexOf(flt.obs)<0) return false;
+    return true;
+  });
 
-  var btn = document.getElementById('btnGuardar');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>Guardando...';
-
-  function finish(msg, type) {
-    showToast(msg, type);
-    limpiarForm();
-    btn.disabled = false;
-    btn.innerHTML = 'Guardar Registro';
-  }
-
-  if (APP.scriptUrl) {
-    fetch(APP.scriptUrl, {
-      method: 'POST', mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(reg)
-    })
-    .then(function(){ finish('Registro guardado correctamente', 'ok'); })
-    .catch(function(){ finish('Guardado localmente. Error al sincronizar con Sheets.', 'ok'); });
-  } else {
-    finish('Registro guardado correctamente', 'ok');
-  }
-}
-
-// ════════════════════════════════════
-//  HISTORIAL
-// ════════════════════════════════════
-function renderHistorial() {
-  var data = APP.historial;
-  document.getElementById('histCount').textContent = data.length ? '(' + data.length + ' registros)' : '';
+  APP.filteredData = data;
+  document.getElementById('histCount').textContent = '('+data.length+' de '+APP.historial.length+' registros)';
   renderFilas(data);
 }
 
-function renderFilas(data) {
-  var tbody = document.getElementById('histBody');
-  if (!data.length) {
-    tbody.innerHTML = '<tr class="emptyRow"><td colspan="18">No hay registros aún</td></tr>'; return;
-  }
-  tbody.innerHTML = data.map(function(r) {
-    var tipo = r.tipo || '';
-    var cls = tipo === 'ENTRADA' ? 'badgeEntrada' : 'badgeSalida';
-    return '<tr>' +
-      '<td>' + (r.fecha||'') + '</td>' +
-      '<td>' + (r.hora||'') + '</td>' +
-      '<td><span class="badge ' + cls + '">' + tipo + '</span></td>' +
-      '<td>' + (r.guardia||'') + '</td>' +
-      '<td>' + (r.guia||'') + '</td>' +
-      '<td>' + (r.nombre||'') + '</td>' +
-      '<td>' + (r.compania||'') + '</td>' +
-      '<td><strong>' + (r.placa||'') + '</strong></td>' +
-      '<td>' + (r.km||'') + '</td>' +
-      '<td>' + (r.comb||'') + '</td>' +
-      '<td>' + (r.destino||'') + '</td>' +
-      '<td>' + (r.bines||'') + '</td>' +
-      '<td>' + (r.sacos||'') + '</td>' +
-      '<td>' + (r.gavetas||'') + '</td>' +
-      '<td>' + (r.llanta||'') + '</td>' +
-      '<td>' + (r.extintor||'') + '</td>' +
-      '<td>' + (r.kit||'') + '</td>' +
-      '<td style="max-width:130px;word-break:break-word">' + (r.obs||'') + '</td>' +
+function canEdit(){return APP.currentUser && (APP.currentUser.role==='admin'||APP.currentUser.role==='supervisor');}
+
+function renderFilas(data){
+  var tbody=document.getElementById('histBody');
+  if(!data.length){tbody.innerHTML='<tr class="emptyRow"><td colspan="21">No hay registros</td></tr>';return;}
+  tbody.innerHTML=data.map(function(r,i){
+    var tipo=r.tipo||'';
+    var cls=tipo==='ENTRADA'?'badgeEntrada':'badgeSalida';
+    var idx=APP.historial.indexOf(r);
+    return '<tr>'+
+      '<td class="actionCell">'+
+        '<button class="dotsBtn" onclick="toggleMenu(event,'+idx+')">⋯</button>'+
+        '<div class="actionMenu" id="menu_'+idx+'" style="display:none">'+
+          '<button onclick="abrirEditRecord('+idx+')" '+(canEdit()?'':'disabled')+'>✏️ Editar</button>'+
+          '<button class="danger" onclick="eliminarRegistro('+idx+')" '+(canEdit()?'':'disabled')+'>🗑️ Eliminar</button>'+
+        '</div>'+
+      '</td>'+
+      '<td>'+fmtFecha(r.fecha)+'</td>'+
+      '<td>'+fmtHora(r.hora)+'</td>'+
+      '<td><span class="badge '+cls+'">'+tipo+'</span></td>'+
+      '<td>'+(r.guardia||'')+'</td>'+
+      '<td>'+(r.turno||'')+'</td>'+
+      '<td>'+(r.guia||'')+'</td>'+
+      '<td>'+(r.compania||'')+'</td>'+
+      '<td>'+(r.nombre||'')+'</td>'+
+      '<td><strong>'+(r.placa||'')+'</strong></td>'+
+      '<td>'+(r.disco||'')+'</td>'+
+      '<td>'+(r.km||'')+'</td>'+
+      '<td>'+(r.comb||'')+'</td>'+
+      '<td>'+(r.destino||'')+'</td>'+
+      '<td>'+(r.llanta||'')+'</td>'+
+      '<td>'+(r.extintor||'')+'</td>'+
+      '<td>'+(r.kit||'')+'</td>'+
+      '<td>'+(r.bines||'')+'</td>'+
+      '<td>'+(r.sacos||'')+'</td>'+
+      '<td>'+(r.gavetas||'')+'</td>'+
+      '<td style="max-width:130px;word-break:break-word">'+(r.obs||'')+'</td>'+
     '</tr>';
   }).join('');
 }
 
-function filtrarHistorial() {
-  var q = (document.getElementById('histSearch').value || '').toLowerCase();
-  if (!q) { renderFilas(APP.historial); return; }
-  var filtered = APP.historial.filter(function(r){
-    return Object.values(r).some(function(v){ return String(v).toLowerCase().indexOf(q) >= 0; });
-  });
-  renderFilas(filtered);
+function fmtFecha(f){
+  if(!f) return '';
+  var p=f.split('-'); if(p.length===3) return p[2]+'/'+p[1]+'/'+p[0];
+  return f;
+}
+function fmtHora(h){ return h||''; }
+
+// ACTION MENU
+function toggleMenu(e,idx){
+  e.stopPropagation();
+  cerrarMenus();
+  var m=document.getElementById('menu_'+idx);
+  if(m){ m.style.display='block'; document.getElementById('menuBackdrop').style.display='block'; }
+}
+function cerrarMenus(){
+  document.querySelectorAll('.actionMenu').forEach(function(m){m.style.display='none';});
+  document.getElementById('menuBackdrop').style.display='none';
 }
 
-// ════════════════════════════════════
-//  USUARIOS
-// ════════════════════════════════════
-function renderUsuarios() {
-  var tbody = document.getElementById('usrBody');
-  tbody.innerHTML = APP.users.map(function(u) {
-    return '<tr>' +
-      '<td><strong>' + u.username + '</strong></td>' +
-      '<td><span class="badge ' + (u.role==='admin'?'badgeAdmin':'badgeUsuario') + '">' + (u.role==='admin'?'Administrador':'Usuario') + '</span></td>' +
-      '<td><span class="badge ' + (u.activo?'badgeActivo':'badgeSalida') + '">' + (u.activo?'Activo':'Inactivo') + '</span></td>' +
-      '<td style="display:flex;gap:6px;flex-wrap:wrap">' +
-        '<button class="btnSmSec" onclick="editarUsuario(' + u.id + ')">Editar</button>' +
-        (u.id !== 1
-          ? '<button class="btnDanger" onclick="eliminarUsuario(' + u.id + ')">Eliminar</button>'
-          : '<span style="font-size:11px;color:#9ca3af;align-self:center">Admin principal</span>') +
+// ELIMINAR REGISTRO
+function eliminarRegistro(idx){
+  if(!canEdit()){showToast('Sin permisos para eliminar','err');return;}
+  if(!confirm('¿Eliminar este registro?')) return;
+  APP.historial.splice(idx,1);
+  lsSet('fjHist',APP.historial);
+  cerrarMenus();
+  renderHistorial();
+  showToast('Registro eliminado','ok');
+}
+
+// EDITAR REGISTRO
+function abrirEditRecord(idx){
+  cerrarMenus();
+  if(!canEdit()){showToast('Sin permisos para editar','err');return;}
+  var r=APP.historial[idx];
+  APP.editRecordIdx=idx;
+  document.getElementById('er_fecha').value=r.fecha||'';
+  document.getElementById('er_hora').value=r.hora||'';
+  document.getElementById('er_guardia').value=r.guardia||'';
+  document.getElementById('er_turno').value=r.turno||'';
+  document.getElementById('er_guia').value=r.guia||'';
+  document.getElementById('er_compania').value=r.compania||'';
+  document.getElementById('er_tipo').value=r.tipo||'ENTRADA';
+  document.getElementById('er_nombre').value=r.nombre||'';
+  document.getElementById('er_destino').value=r.destino||'';
+  document.getElementById('er_placa').value=r.placa||'';
+  document.getElementById('er_disco').value=r.disco||'';
+  document.getElementById('er_km').value=r.km||'';
+  document.getElementById('er_comb').value=r.comb||'';
+  document.getElementById('er_llanta').value=r.llanta||'No';
+  document.getElementById('er_extintor').value=r.extintor||'No';
+  document.getElementById('er_kit').value=r.kit||'No';
+  document.getElementById('er_bines').value=r.bines||'0';
+  document.getElementById('er_sacos').value=r.sacos||'0';
+  document.getElementById('er_gavetas').value=r.gavetas||'0';
+  document.getElementById('er_obs').value=r.obs||'';
+  document.getElementById('editRecordOverlay').style.display='flex';
+}
+
+function cerrarEditRecord(){ document.getElementById('editRecordOverlay').style.display='none'; APP.editRecordIdx=null; }
+
+function guardarEditRecord(){
+  var idx=APP.editRecordIdx;
+  if(idx===null||idx===undefined) return;
+  var r=APP.historial[idx];
+  r.fecha=document.getElementById('er_fecha').value;
+  r.hora=document.getElementById('er_hora').value;
+  r.guardia=(document.getElementById('er_guardia').value||'').trim();
+  r.turno=document.getElementById('er_turno').value;
+  r.guia=(document.getElementById('er_guia').value||'').trim();
+  r.compania=(document.getElementById('er_compania').value||'').trim();
+  r.tipo=document.getElementById('er_tipo').value;
+  r.nombre=(document.getElementById('er_nombre').value||'').trim();
+  r.destino=(document.getElementById('er_destino').value||'').trim();
+  r.placa=(document.getElementById('er_placa').value||'').trim().toUpperCase();
+  r.disco=(document.getElementById('er_disco').value||'').trim();
+  r.km=document.getElementById('er_km').value||'';
+  r.comb=document.getElementById('er_comb').value||'';
+  r.llanta=document.getElementById('er_llanta').value;
+  r.extintor=document.getElementById('er_extintor').value;
+  r.kit=document.getElementById('er_kit').value;
+  r.bines=document.getElementById('er_bines').value||'0';
+  r.sacos=document.getElementById('er_sacos').value||'0';
+  r.gavetas=document.getElementById('er_gavetas').value||'0';
+  r.obs=(document.getElementById('er_obs').value||'').trim();
+  lsSet('fjHist',APP.historial);
+  cerrarEditRecord();
+  renderHistorial();
+  showToast('Registro actualizado','ok');
+}
+
+document.getElementById('editRecordOverlay').addEventListener('click',function(e){if(e.target===e.currentTarget)cerrarEditRecord();});
+
+// ════════════════ EXPORT EXCEL ════════════════
+function exportarExcel(){
+  var data = APP.filteredData.length ? APP.filteredData : APP.historial;
+  if(!data.length){showToast('No hay registros para exportar','err');return;}
+
+  var headers=['FECHA','HORA','MOVIMIENTO','GUARDIA','TURNO','GUÍA','COMPAÑÍA',
+    'NOMBRE/APELLIDO','PLACA','DISCO','KILOMETRAJE','COMBUSTIBLE','RETORNO/DESTINO',
+    'LLANTA EMERGENCIA','EXTINTOR','KIT','BINES','SACOS','GAVETAS','OBSERVACIONES'];
+
+  var wsData=[headers];
+  data.forEach(function(r){
+    // Fecha como valor de fecha Excel
+    var fechaVal = r.fecha ? parseFecha(r.fecha) : '';
+    // Hora como valor de tiempo Excel
+    var horaVal = r.hora ? parseHora(r.hora) : '';
+    wsData.push([
+      fechaVal, horaVal,
+      r.tipo||'', r.guardia||'', r.turno||'', r.guia||'', r.compania||'',
+      r.nombre||'', r.placa||'', r.disco||'',
+      r.km!==''&&r.km!==null&&r.km!==undefined ? Number(r.km) : '',
+      r.comb||'', r.destino||'',
+      r.llanta||'', r.extintor||'', r.kit||'',
+      r.bines!==''&&r.bines!==undefined ? Number(r.bines) : 0,
+      r.sacos!==''&&r.sacos!==undefined ? Number(r.sacos) : 0,
+      r.gavetas!==''&&r.gavetas!==undefined ? Number(r.gavetas) : 0,
+      r.obs||''
+    ]);
+  });
+
+  var wb=XLSX.utils.book_new();
+  var ws=XLSX.utils.aoa_to_sheet(wsData);
+
+  // Formatos de columna
+  var numFmt = { fecha:'DD/MM/YYYY', hora:'HH:MM', num:'#,##0', gen:'@' };
+  var colFmts = [
+    numFmt.fecha, numFmt.hora, numFmt.gen, numFmt.gen, numFmt.gen, numFmt.gen, numFmt.gen,
+    numFmt.gen, numFmt.gen, numFmt.gen, numFmt.num, numFmt.gen, numFmt.gen,
+    numFmt.gen, numFmt.gen, numFmt.gen, numFmt.num, numFmt.num, numFmt.num, numFmt.gen
+  ];
+
+  var range=XLSX.utils.decode_range(ws['!ref']);
+  for(var R=1;R<=range.e.r;R++){
+    for(var C=0;C<=range.e.c;C++){
+      var addr=XLSX.utils.encode_cell({r:R,c:C});
+      if(!ws[addr]) continue;
+      ws[addr].z = colFmts[C] || numFmt.gen;
+    }
+  }
+
+  // Ancho de columnas
+  ws['!cols']=[
+    {wch:12},{wch:8},{wch:10},{wch:18},{wch:8},{wch:12},{wch:18},
+    {wch:22},{wch:10},{wch:8},{wch:12},{wch:12},{wch:18},
+    {wch:14},{wch:10},{wch:6},{wch:8},{wch:8},{wch:8},{wch:30}
+  ];
+
+  XLSX.utils.book_append_sheet(wb,ws,'Bitácora');
+  var now=new Date();
+  var fname='Bitacora_Seguridad_'+now.getFullYear()+pad(now.getMonth()+1)+pad(now.getDate())+'.xlsx';
+  XLSX.writeFile(wb,fname);
+  showToast('Excel exportado: '+fname,'ok');
+}
+
+function parseFecha(f){
+  // yyyy-mm-dd → número de fecha Excel
+  var p=f.split('-');
+  if(p.length===3){
+    var d=new Date(Number(p[0]),Number(p[1])-1,Number(p[2]));
+    return d;
+  }
+  return f;
+}
+function parseHora(h){
+  // hh:mm → fracción de día para Excel
+  if(!h) return '';
+  var p=h.split(':');
+  var hh=Number(p[0]||0), mm=Number(p[1]||0);
+  return (hh*3600+mm*60)/(86400);
+}
+function pad(n){return n<10?'0'+n:String(n);}
+
+// ════════════════ CONFIG URL ════════════════
+function guardarUrl(){
+  var val=(document.getElementById('cfgUrlInput').value||'').trim();
+  var st=document.getElementById('cfgStatus');
+  if(!val){ st.textContent='⚠️ Ingresa una URL válida.'; st.className='cfgStatus err'; return; }
+  if(val.indexOf('script.google.com')<0){ st.textContent='⚠️ La URL no parece ser de Google Apps Script.'; st.className='cfgStatus err'; return; }
+  APP.scriptUrl=val;
+  lsSet('fjUrl',val);
+  st.textContent='✅ URL guardada y activa para todas las secciones.'; st.className='cfgStatus ok';
+  showToast('URL guardada correctamente','ok');
+}
+
+// ════════════════ USUARIOS ════════════════
+function renderUsuarios(){
+  var roleLabel={admin:'Administrador',supervisor:'Supervisor',usuario:'Usuario'};
+  var roleCls={admin:'badgeAdmin',supervisor:'badgeSupervisor',usuario:'badgeUsuario'};
+  document.getElementById('usrBody').innerHTML=APP.users.map(function(u){
+    return '<tr>'+
+      '<td><strong>'+u.username+'</strong></td>'+
+      '<td><span class="badge '+(roleCls[u.role]||'badgeUsuario')+'">'+(roleLabel[u.role]||u.role)+'</span></td>'+
+      '<td><span class="badge '+(u.activo?'badgeActivo':'badgeSalida')+'">'+(u.activo?'Activo':'Inactivo')+'</span></td>'+
+      '<td style="display:flex;gap:6px;flex-wrap:wrap">'+
+        '<button class="btnSmSec" onclick="editarUsuario('+u.id+')">Editar</button>'+
+        (u.id!==1?'<button class="btnDanger" onclick="eliminarUsuario('+u.id+')">Eliminar</button>':'<span style="font-size:11px;color:#9ca3af;align-self:center">Admin principal</span>')+
       '</td></tr>';
   }).join('');
 }
 
-function abrirModalUsr() {
-  APP.editId = null;
-  document.getElementById('modalTitle').textContent = 'Nuevo Usuario';
-  document.getElementById('mUser').value = '';
-  document.getElementById('mPass').value = '';
-  document.getElementById('mRol').value = 'usuario';
-  document.getElementById('modalOverlay').style.display = 'flex';
+function abrirModalUsr(){
+  APP.editId=null;
+  document.getElementById('modalTitle').textContent='Nuevo Usuario';
+  document.getElementById('mUser').value=''; document.getElementById('mPass').value=''; document.getElementById('mRol').value='usuario';
+  document.getElementById('modalOverlay').style.display='flex';
 }
 
-function editarUsuario(id) {
-  var u = APP.users.find(function(x){ return x.id === id; });
-  if (!u) return;
-  APP.editId = id;
-  document.getElementById('modalTitle').textContent = 'Editar Usuario';
-  document.getElementById('mUser').value = u.username;
-  document.getElementById('mPass').value = '';
-  document.getElementById('mRol').value = u.role;
-  document.getElementById('modalOverlay').style.display = 'flex';
+function editarUsuario(id){
+  var u=APP.users.find(function(x){return x.id===id;}); if(!u) return;
+  APP.editId=id;
+  document.getElementById('modalTitle').textContent='Editar Usuario';
+  document.getElementById('mUser').value=u.username; document.getElementById('mPass').value=''; document.getElementById('mRol').value=u.role;
+  document.getElementById('modalOverlay').style.display='flex';
 }
 
-function guardarUsuario() {
-  var username = (document.getElementById('mUser').value || '').trim().toUpperCase();
-  var password = document.getElementById('mPass').value || '';
-  var role = document.getElementById('mRol').value;
-  if (!username) { showToast('El nombre de usuario es obligatorio', 'err'); return; }
-  if (APP.editId === null) {
-    if (!password) { showToast('La contraseña es obligatoria', 'err'); return; }
-    if (APP.users.find(function(x){ return x.username.toUpperCase() === username; })) {
-      showToast('Ese usuario ya existe', 'err'); return;
-    }
-    APP.users.push({ id: Date.now(), username: username, password: password, role: role, activo: true });
-    showToast('Usuario creado correctamente', 'ok');
+function guardarUsuario(){
+  var username=(document.getElementById('mUser').value||'').trim().toUpperCase();
+  var password=document.getElementById('mPass').value||'';
+  var role=document.getElementById('mRol').value;
+  if(!username){showToast('Usuario obligatorio','err');return;}
+  if(APP.editId===null){
+    if(!password){showToast('Contraseña obligatoria','err');return;}
+    if(APP.users.find(function(x){return x.username.toUpperCase()===username;})){showToast('Usuario ya existe','err');return;}
+    APP.users.push({id:Date.now(),username:username,password:password,role:role,activo:true});
+    showToast('Usuario creado','ok');
   } else {
-    var idx = APP.users.findIndex(function(x){ return x.id === APP.editId; });
-    if (idx === -1) return;
-    APP.users[idx].username = username;
-    APP.users[idx].role = role;
-    if (password) APP.users[idx].password = password;
-    showToast('Usuario actualizado', 'ok');
+    var idx=APP.users.findIndex(function(x){return x.id===APP.editId;}); if(idx===-1) return;
+    APP.users[idx].username=username; APP.users[idx].role=role;
+    if(password) APP.users[idx].password=password;
+    showToast('Usuario actualizado','ok');
   }
-  ls_set('fjUsers', APP.users);
-  cerrarModal();
-  renderUsuarios();
+  lsSet('fjUsers',APP.users); cerrarModal(); renderUsuarios();
 }
 
-function eliminarUsuario(id) {
-  var u = APP.users.find(function(x){ return x.id === id; });
-  if (!u) return;
-  if (APP.currentUser && u.id === APP.currentUser.id) { showToast('No puedes eliminar tu propio usuario', 'err'); return; }
-  if (!confirm('¿Eliminar usuario "' + u.username + '"?')) return;
-  APP.users = APP.users.filter(function(x){ return x.id !== id; });
-  ls_set('fjUsers', APP.users);
-  renderUsuarios();
-  showToast('Usuario eliminado', '');
+function eliminarUsuario(id){
+  var u=APP.users.find(function(x){return x.id===id;}); if(!u) return;
+  if(APP.currentUser&&u.id===APP.currentUser.id){showToast('No puedes eliminarte','err');return;}
+  if(!confirm('¿Eliminar usuario "'+u.username+'"?')) return;
+  APP.users=APP.users.filter(function(x){return x.id!==id;});
+  lsSet('fjUsers',APP.users); renderUsuarios(); showToast('Usuario eliminado','');
 }
 
-function cerrarModal() { document.getElementById('modalOverlay').style.display = 'none'; APP.editId = null; }
-document.getElementById('modalOverlay').addEventListener('click', function(e){ if(e.target === e.currentTarget) cerrarModal(); });
-
-function guardarUrl(val) {
-  APP.scriptUrl = val.trim();
-  ls_str('fjUrl', APP.scriptUrl);
-}
+function cerrarModal(){document.getElementById('modalOverlay').style.display='none'; APP.editId=null;}
+document.getElementById('modalOverlay').addEventListener('click',function(e){if(e.target===e.currentTarget)cerrarModal();});
 </script>
 </body>
 </html>
